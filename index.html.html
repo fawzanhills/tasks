@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متابعة المهام والمشاريع</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-dark: #1F3864;
+    --brand-mid: #2E75B6;
+    --brand-light-1: #EBF3FB;
+    --brand-light-2: #DDEEFF;
+    --brand-accent: #4A90D9;
+
+    --status-done: #10B981;
+    --status-done-bg: #D1FAE5;
+    --status-progress: #F59E0B;
+    --status-progress-bg: #FEF3C7;
+    --status-notstarted: #6B7280;
+    --status-notstarted-bg: #F3F4F6;
+    --status-overdue: #EF4444;
+    --status-overdue-bg: #FEE2E2;
+
+    --bg: #F8FAFC;
+    --surface: #FFFFFF;
+    --border: #E5E7EB;
+    --text: #1F2937;
+    --text-muted: #6B7280;
+
+    --shadow-sm: 0 1px 2px rgba(31, 56, 100, 0.06);
+    --shadow-md: 0 4px 12px rgba(31, 56, 100, 0.08);
+    --shadow-lg: 0 8px 24px rgba(31, 56, 100, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: 'Cairo', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { padding: 24px 16px 80px; }
+  .container { max-width: 1280px; margin: 0 auto; }
+
+  /* ===== Header ===== */
+  .page-header {
+    background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand-mid) 100%);
+    color: #fff;
+    border-radius: 20px;
+    padding: 32px 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .page-header h1 {
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 800;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .page-header .subtitle {
+    opacity: 0.85;
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+  }
+  .header-actions {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    z-index: 2;
+  }
+  .last-updated {
+    font-size: 12px;
+    opacity: 0.9;
+    background: rgba(255,255,255,0.15);
+    padding: 8px 14px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+  }
+  .settings-btn {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-family: inherit;
+  }
+  .settings-btn:hover { background: rgba(255,255,255,0.3); transform: rotate(45deg); }
+
+  /* ===== Dashboard ===== */
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .dash-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+  }
+  .dash-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 2px 0;
+  }
+  .dash-divider::before,
+  .dash-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .stat-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .stat-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .stat-card .stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .stat-card .stat-value {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--brand-dark);
+    line-height: 1.1;
+  }
+  .stat-card .stat-unit {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-right: 4px;
+  }
+  .stat-card .stat-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  .stat-card.accent-overdue .stat-value { color: var(--status-overdue); }
+  .stat-card.accent-near .stat-value { color: var(--status-progress); }
+  .stat-card.accent-done .stat-value { color: var(--status-done); }
+  .stat-card.primary {
+    background: linear-gradient(135deg, var(--brand-dark), var(--brand-mid));
+    color: #fff;
+    border: none;
+  }
+  .stat-card.primary .stat-label { color: rgba(255,255,255,0.85); }
+  .stat-card.primary .stat-value { color: #fff; }
+  .stat-card.primary .stat-unit { color: rgba(255,255,255,0.8); }
+
+  .overall-progress {
+    margin-top: 12px;
+    height: 8px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .overall-progress-fill {
+    height: 100%;
+    background: #fff;
+    border-radius: 100px;
+    transition: width 0.6s ease;
+  }
+
+  /* ===== Filters ===== */
+  .filters-bar {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .filter-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-left: 4px;
+  }
+  .filter-select {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.15s;
+    min-width: 140px;
+  }
+  .filter-select:hover { border-color: var(--brand-mid); }
+  .filter-select:focus { outline: none; border-color: var(--brand-dark); box-shadow: 0 0 0 3px rgba(46,117,182,0.15); }
+  .filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--brand-light-1);
+    color: var(--brand-dark);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .filter-toggle input { display: none; }
+  .filter-toggle.active {
+    background: var(--brand-dark);
+    color: #fff;
+  }
+  .reset-btn {
+    margin-right: auto;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .reset-btn:hover { background: var(--brand-light-1); color: var(--brand-dark); }
+
+  /* ===== Project Section ===== */
+  .project-section {
+    margin-bottom: 32px;
+  }
+  .project-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding: 0 4px;
+  }
+  .project-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--brand-dark);
+  }
+  .project-badge {
+    background: var(--brand-light-1);
+    color: var(--brand-dark);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  /* ===== Task Card ===== */
+  .task-card {
+    background: var(--surface);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .task-card:hover { box-shadow: var(--shadow-md); }
+  .task-header {
+    padding: 18px 20px;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: center;
+    transition: background 0.15s;
+  }
+  .task-header:hover { background: var(--brand-light-1); }
+
+  .task-number {
+    background: linear-gradient(135deg, var(--brand-dark), var(--brand-mid));
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .task-info { min-width: 0; }
+  .task-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .deadline-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .deadline-pill.days-ok { background: var(--brand-light-1); color: var(--brand-dark); }
+  .deadline-pill.days-near { background: var(--status-progress-bg); color: #92400E; }
+  .deadline-pill.days-overdue { background: var(--status-overdue-bg); color: #991B1B; }
+  .deadline-pill.days-done { background: var(--status-done-bg); color: #065F46; }
+
+  .task-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    min-width: 140px;
+  }
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .status-done { background: var(--status-done-bg); color: #065F46; }
+  .status-progress { background: var(--status-progress-bg); color: #92400E; }
+  .status-notstarted { background: var(--status-notstarted-bg); color: #374151; }
+  .status-overdue { background: var(--status-overdue-bg); color: #991B1B; }
+
+  .task-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--brand-light-1);
+    border-radius: 100px;
+    overflow: hidden;
+    min-width: 70px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--brand-mid), var(--brand-accent));
+    border-radius: 100px;
+    transition: width 0.6s ease;
+  }
+  .progress-fill.complete { background: linear-gradient(90deg, #10B981, #34D399); }
+  .progress-fill.overdue { background: linear-gradient(90deg, #EF4444, #F87171); }
+  .progress-percent {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--brand-dark);
+    min-width: 42px;
+    text-align: center;
+  }
+
+  .expand-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--brand-light-1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--brand-dark);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .task-card.expanded .expand-icon { transform: rotate(180deg); }
+
+  /* ===== Subtasks ===== */
+  .subtasks {
+    display: none;
+    background: linear-gradient(to bottom, var(--brand-light-1) 0%, transparent 100%);
+    padding: 8px 20px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .task-card.expanded .subtasks { display: block; }
+
+  .subtask-row {
+    display: grid;
+    grid-template-columns: 48px 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--surface);
+    border-radius: 10px;
+    margin-top: 8px;
+    border: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+  .subtask-row:hover { border-color: var(--brand-mid); }
+  .subtask-num {
+    background: var(--brand-light-2);
+    color: var(--brand-dark);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .subtask-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .subtask-details {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .subtask-details .label { font-weight: 600; color: var(--brand-dark); }
+  .owner-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, var(--brand-dark), var(--brand-mid));
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+  .subtask-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 110px;
+  }
+  .subtask-progress .progress-bar { min-width: 60px; }
+  .subtask-progress .progress-percent { font-size: 13px; min-width: 38px; }
+
+  /* ===== States ===== */
+  .loading, .empty, .error-box {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    color: var(--text-muted);
+  }
+  .loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--brand-light-1);
+    border-top-color: var(--brand-mid);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-box {
+    background: #FEF2F2;
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+    text-align: right;
+  }
+  .error-box h3 { margin-bottom: 12px; font-size: 18px; }
+  .error-box code {
+    display: block;
+    background: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    direction: ltr;
+    text-align: left;
+    word-break: break-all;
+    color: #1F2937;
+    border: 1px solid #FCA5A5;
+  }
+
+  /* ===== Setup Screen & Settings ===== */
+  .setup-screen {
+    max-width: 640px;
+    margin: 40px auto;
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 40px 32px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .setup-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--brand-dark), var(--brand-mid));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+  }
+  .setup-screen h2 {
+    color: var(--brand-dark);
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .setup-screen > p {
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    font-size: 15px;
+  }
+  .url-input {
+    width: 100%;
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    direction: ltr;
+    text-align: left;
+    transition: border-color 0.15s;
+    background: #F8FAFC;
+  }
+  .url-input:focus {
+    outline: none;
+    border-color: var(--brand-mid);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(46,117,182,0.1);
+  }
+  .primary-btn {
+    background: linear-gradient(135deg, var(--brand-dark), var(--brand-mid));
+    color: #fff;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 16px;
+    width: 100%;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .primary-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .secondary-btn {
+    background: var(--brand-light-1);
+    color: var(--brand-dark);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .secondary-btn:hover { background: var(--brand-light-2); }
+  .danger-btn {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .danger-btn:hover { background: #FECACA; }
+
+  .setup-help {
+    margin-top: 28px;
+    text-align: right;
+    background: var(--brand-light-1);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+  .setup-help summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--brand-dark);
+    font-size: 15px;
+    list-style: none;
+    user-select: none;
+  }
+  .setup-help summary::-webkit-details-marker { display: none; }
+  .setup-help summary::before { content: '▼ '; font-size: 10px; margin-left: 6px; transition: transform 0.2s; display: inline-block; }
+  .setup-help[open] summary::before { transform: rotate(-90deg); }
+  .setup-help ol {
+    margin: 14px 20px 0;
+    line-height: 2;
+    color: var(--text);
+    font-size: 14px;
+  }
+  .setup-help li strong { color: var(--brand-dark); background: #fff; padding: 2px 8px; border-radius: 6px; }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal-card {
+    background: var(--surface);
+    border-radius: 18px;
+    padding: 28px;
+    max-width: 540px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-card h3 {
+    color: var(--brand-dark);
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  .modal-card label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .modal-buttons button { flex: 1; min-width: 120px; }
+
+
+  @media (max-width: 700px) {
+    body { padding: 16px 10px 40px; }
+    .page-header { padding: 24px 20px; }
+    .header-actions { position: static; margin-top: 14px; justify-content: flex-start; }
+    .task-header {
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+    }
+    .task-right {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      align-items: center;
+      min-width: 0;
+    }
+    .task-progress-wrap { flex: 1; }
+    .expand-icon { display: none; }
+    .subtask-row {
+      grid-template-columns: auto 1fr;
+    }
+    .subtask-progress { grid-column: 1 / -1; }
+    .subtask-status { grid-column: 1 / -1; }
+    .stat-card { padding: 16px; }
+    .stat-card .stat-value { font-size: 26px; }
+    .filters-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .filter-label { display: none; }
+    .filter-select {
+      width: 100%;
+      min-width: 0;
+    }
+    .filter-toggle { justify-content: center; }
+    .reset-btn { margin: 0; text-align: center; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ========== HEADER ========== -->
+  <div class="page-header">
+    <h1>📋 متابعة المهام والمشاريع</h1>
+    <div class="subtitle">لوحة تحكم تفاعلية لمتابعة إنجاز المهام والمواعيد النهائية</div>
+    <div class="header-actions">
+      <button class="settings-btn" id="settingsBtn" title="الإعدادات" style="display:none;">⚙️</button>
+      <div class="last-updated" id="lastUpdated">⏳ جارٍ التحميل...</div>
+    </div>
+  </div>
+
+  <!-- ========== SETUP SCREEN (أول مرة) ========== -->
+  <div class="setup-screen" id="setupScreen" style="display:none;">
+    <div class="setup-icon">🔗</div>
+    <h2>ربط الصفحة بشيت جوجل</h2>
+    <p>ألصق رابط الشيت المنشور لتبدأ استعراض المهام</p>
+    <input type="url" class="url-input" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?output=csv" dir="ltr">
+    <button class="primary-btn" id="saveUrlBtn">💾 حفظ واستعراض البيانات</button>
+
+    <details class="setup-help">
+      <summary>📖 كيف أحصل على الرابط؟</summary>
+      <ol>
+        <li>افتح شيت جوجل من <strong>Google Drive</strong></li>
+        <li>من القائمة: <strong>File</strong> ← <strong>Share</strong> ← <strong>Publish to web</strong></li>
+        <li>اختر ورقة <strong>"المهام"</strong> + صيغة <strong>CSV</strong></li>
+        <li>اضغط زر <strong>Publish</strong> وانسخ الرابط الظاهر</li>
+        <li>الصق الرابط في الحقل أعلاه واضغط حفظ</li>
+      </ol>
+    </details>
+  </div>
+
+  <!-- ========== SETTINGS MODAL ========== -->
+  <div class="modal-overlay" id="settingsModal" style="display:none;">
+    <div class="modal-card">
+      <h3>⚙️ الإعدادات</h3>
+      <label>رابط شيت جوجل الحالي:</label>
+      <input type="url" class="url-input" id="settingsUrlInput" dir="ltr">
+      <div class="modal-buttons">
+        <button class="danger-btn" id="clearUrlBtn">🗑️ مسح وبدء من جديد</button>
+        <button class="secondary-btn" id="cancelSettingsBtn">إلغاء</button>
+        <button class="primary-btn" id="saveSettingsBtn" style="flex:1.5;">💾 حفظ</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========== DASHBOARD STATS ========== -->
+  <div class="dashboard" id="dashboard" style="display:none;">
+
+    <!-- الصف الأول: الإجماليات الرئيسية -->
+    <div class="dash-row">
+      <div class="stat-card primary">
+        <div class="stat-label">نسبة الإنجاز الكلية</div>
+        <div class="stat-value"><span id="overallPercent">0</span><span class="stat-unit">%</span></div>
+        <div class="overall-progress"><div class="overall-progress-fill" id="overallProgressBar" style="width:0%"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📁</div>
+        <div class="stat-label">المشاريع</div>
+        <div class="stat-value" id="totalProjects">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-label">المهام الرئيسية</div>
+        <div class="stat-value" id="totalMain">0</div>
+      </div>
+      <div class="stat-card accent-near">
+        <div class="stat-icon">⏰</div>
+        <div class="stat-label">ديدلاين قريب (30 يوم)</div>
+        <div class="stat-value" id="totalNear">0</div>
+        <div class="stat-sub">من المهام الرئيسية</div>
+      </div>
+    </div>
+
+    <!-- الفاصل -->
+    <div class="dash-divider">
+      <span>تفاصيل المهام الفرعية</span>
+    </div>
+
+    <!-- الصف الثاني: إحصائيات الفرعيات -->
+    <div class="dash-row">
+      <div class="stat-card">
+        <div class="stat-icon">🧩</div>
+        <div class="stat-label">إجمالي المهام الفرعية</div>
+        <div class="stat-value" id="totalSub">0</div>
+      </div>
+      <div class="stat-card accent-done">
+        <div class="stat-icon">✅</div>
+        <div class="stat-label">المهام الفرعية المكتملة</div>
+        <div class="stat-value" id="totalSubDone">0</div>
+        <div class="stat-sub" id="totalSubDonePct">—</div>
+      </div>
+      <div class="stat-card accent-overdue">
+        <div class="stat-icon">🔴</div>
+        <div class="stat-label">المهام الفرعية المتأخرة</div>
+        <div class="stat-value" id="totalSubOverdue">0</div>
+        <div class="stat-sub" id="totalSubOverduePct">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔄</div>
+        <div class="stat-label">قيد التنفيذ</div>
+        <div class="stat-value" id="totalSubProgress">0</div>
+        <div class="stat-sub" id="totalSubProgressPct">—</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========== FILTERS ========== -->
+  <div class="filters-bar" id="filtersBar" style="display:none;">
+    <span class="filter-label">🔍 تصفية:</span>
+    <select class="filter-select" id="projectFilter">
+      <option value="">كل المشاريع</option>
+    </select>
+    <select class="filter-select" id="statusFilter">
+      <option value="">كل الحالات</option>
+      <option value="done">✅ مكتملة</option>
+      <option value="progress">🟡 قيد التنفيذ</option>
+      <option value="notstarted">🔵 لم تبدأ</option>
+      <option value="overdue">🔴 متأخرة</option>
+    </select>
+    <label class="filter-toggle" id="nearDeadlineToggle">
+      <input type="checkbox" id="nearDeadline">
+      <span>⏰ ديدلاين قريب فقط</span>
+    </label>
+    <button class="reset-btn" id="resetBtn">↻ إعادة تعيين</button>
+  </div>
+
+  <!-- ========== CONTENT ========== -->
+  <div id="content">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>جارٍ تحميل بيانات الشيت...</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   ⚙️  إعدادات الصفحة
+   ============================================================ */
+
+/* رابط افتراضي (اختياري): يمكنك وضعه هنا مباشرة إذا أردت،
+   أو تركه فاضي والصفحة راح تسألك عن الرابط عند فتحها أول مرة. */
+const DEFAULT_SHEET_URL = '';
+
+/* مدة قبل اعتبار الديدلاين "قريب" (بالأيام) */
+const NEAR_DEADLINE_DAYS = 30;
+
+/* ============================================================ */
+
+/* ========== إدارة رابط الشيت ========== */
+function getSheetUrl() {
+  try {
+    const saved = localStorage.getItem('sheet_csv_url');
+    if (saved && saved.trim()) return saved.trim();
+  } catch(e) {}
+  if (DEFAULT_SHEET_URL && DEFAULT_SHEET_URL.includes('docs.google.com')) return DEFAULT_SHEET_URL;
+  return null;
+}
+
+function saveSheetUrl(url) {
+  try { localStorage.setItem('sheet_csv_url', url.trim()); } catch(e) {}
+}
+
+function clearSheetUrl() {
+  try { localStorage.removeItem('sheet_csv_url'); } catch(e) {}
+}
+
+function isValidSheetUrl(url) {
+  return url && url.includes('docs.google.com/spreadsheets');
+}
+
+let allTasks = [];
+let filters = { project: '', status: '', nearOnly: false };
+
+/* ========== CSV Parser (يدعم quoted commas) ========== */
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', inQuote = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuote) {
+      if (c === '"' && text[i+1] === '"') { field += '"'; i++; }
+      else if (c === '"') inQuote = false;
+      else field += c;
+    } else {
+      if (c === '"') inQuote = true;
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c !== '\r') field += c;
+    }
+  }
+  if (field || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+/* ========== معالجة النسبة (تدعم 0.4 أو 40 أو 40%) ========== */
+function parsePercent(v) {
+  if (v === null || v === undefined || v === '') return 0;
+  const s = String(v).trim().replace('%', '').replace(',', '.');
+  const n = parseFloat(s);
+  if (isNaN(n)) return 0;
+  return n > 1 ? Math.min(100, n) : Math.min(100, n * 100);
+}
+
+/* ========== معالجة التاريخ (DD-MM-YYYY أو YYYY-MM-DD أو DD/MM/YYYY) ========== */
+function parseDate(v) {
+  if (!v) return null;
+  const s = String(v).trim();
+  if (!s) return null;
+  // YYYY-MM-DD
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (m) return new Date(+m[1], +m[2]-1, +m[3]);
+  // DD-MM-YYYY or DD/MM/YYYY
+  m = s.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+  if (m) return new Date(+m[3], +m[2]-1, +m[1]);
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+}
+
+function daysBetween(date) {
+  if (!date) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(date); target.setHours(0,0,0,0);
+  return Math.round((target - today) / 86400000);
+}
+
+function formatDate(date) {
+  if (!date) return '';
+  return date.toLocaleDateString('ar', { calendar: 'gregory', numberingSystem: 'latn', year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+/* ========== تحديد الحالة ========== */
+function computeStatus(percent, deadline) {
+  if (percent >= 100) return 'done';
+  const days = daysBetween(deadline);
+  if (days !== null && days < 0) return 'overdue';
+  if (percent > 0) return 'progress';
+  return 'notstarted';
+}
+
+const STATUS_INFO = {
+  done:        { label: '✅ مكتملة',      cls: 'status-done' },
+  progress:    { label: '🟡 قيد التنفيذ', cls: 'status-progress' },
+  notstarted:  { label: '🔵 لم تبدأ',     cls: 'status-notstarted' },
+  overdue:     { label: '🔴 متأخرة',      cls: 'status-overdue' }
+};
+
+/* ========== تحليل البيانات من CSV ========== */
+function processData(rows) {
+  if (rows.length < 2) return [];
+
+  // إيجاد صف الهيدر - أول صف فيه "المشروع" أو "اسم المهمة"
+  let headerIdx = -1;
+  for (let i = 0; i < Math.min(5, rows.length); i++) {
+    const joined = rows[i].join('|');
+    if (joined.includes('المشروع') || joined.includes('اسم المهمة')) {
+      headerIdx = i; break;
+    }
+  }
+  if (headerIdx === -1) headerIdx = 0;
+
+  const headers = rows[headerIdx].map(h => String(h || '').trim().replace(/^\uFEFF/, ''));
+  const dataRows = rows.slice(headerIdx + 1);
+
+  // تحديد الأعمدة
+  const col = (names) => {
+    for (const name of names) {
+      const idx = headers.findIndex(h => h.includes(name));
+      if (idx !== -1) return idx;
+    }
+    return -1;
+  };
+  const idx = {
+    project:  col(['المشروع']),
+    num:      col(['#', 'الرقم']),
+    name:     col(['اسم المهمة', 'المهمة']),
+    deadline: col(['الديدلاين', 'الموعد']),
+    percent:  col(['الإنجاز', 'النسبة']),
+    phase:    col(['المرحلة']),
+    next:     col(['الخطوة', 'القادمة']),
+    update:   col(['آخر تحديث', 'التحديث']),
+    owner:    col(['المسؤول', 'المسؤول عن'])
+  };
+
+  // جمع الصفوف
+  const projects = {};
+  let currentProject = null;
+  let currentMain = null;
+
+  for (const row of dataRows) {
+    const project = idx.project !== -1 ? String(row[idx.project] || '').trim() : currentProject;
+    const numRaw = String(row[idx.num] || '').trim();
+    const name = String(row[idx.name] || '').trim();
+
+    if (!name && !numRaw) continue; // صف فاضي
+
+    if (project) currentProject = project;
+    if (!currentProject) continue;
+
+    if (!projects[currentProject]) projects[currentProject] = [];
+
+    const num = parseFloat(numRaw.replace(',', '.'));
+    if (isNaN(num)) continue;
+
+    const isMain = Number.isInteger(num);
+    const percent = parsePercent(row[idx.percent]);
+    const deadline = parseDate(row[idx.deadline]);
+
+    const task = {
+      project: currentProject,
+      num, numRaw, name,
+      isMain,
+      percent,
+      deadline,
+      phase: String(row[idx.phase] || '').trim(),
+      nextStep: String(row[idx.next] || '').trim(),
+      lastUpdate: String(row[idx.update] || '').trim(),
+      owner: String(row[idx.owner] || '').trim(),
+      subtasks: []
+    };
+
+    if (isMain) {
+      currentMain = task;
+      projects[currentProject].push(task);
+    } else {
+      if (currentMain && task.name) currentMain.subtasks.push(task);
+    }
+  }
+
+  // حساب نسبة المهمة الرئيسية من متوسط الفرعيات
+  Object.values(projects).forEach(tasks => {
+    tasks.forEach(t => {
+      if (t.subtasks.length > 0) {
+        const avg = t.subtasks.reduce((s,x) => s + x.percent, 0) / t.subtasks.length;
+        t.percent = Math.round(avg * 10) / 10;
+      }
+    });
+  });
+
+  // تحويل لمصفوفة
+  const result = [];
+  Object.entries(projects).forEach(([pname, tasks]) => {
+    result.push({ name: pname, tasks: tasks.filter(t => t.name) });
+  });
+  return result;
+}
+
+/* ========== حساب الإحصائيات ========== */
+function computeStats(projects) {
+  let totalMain = 0, totalNear = 0;
+  let totalSub = 0, totalSubDone = 0, totalSubOverdue = 0;
+  let percentSum = 0, percentCount = 0;
+
+  projects.forEach(p => {
+    p.tasks.forEach(t => {
+      // --- مهام رئيسية ---
+      totalMain++;
+      percentSum += t.percent;
+      percentCount++;
+      const days = daysBetween(t.deadline);
+      const mainStatus = computeStatus(t.percent, t.deadline);
+      if (days !== null && days >= 0 && days <= NEAR_DEADLINE_DAYS && mainStatus !== 'done') totalNear++;
+
+      // --- مهام فرعية ---
+      t.subtasks.forEach(st => {
+        totalSub++;
+        const st_status = computeStatus(st.percent, t.deadline); // تستخدم ديدلاين الرئيسية
+        if (st_status === 'done') totalSubDone++;
+        if (st_status === 'overdue') totalSubOverdue++;
+      });
+    });
+  });
+
+  return {
+    projects: projects.length,
+    totalMain,
+    totalNear,
+    totalSub,
+    totalSubDone,
+    totalSubOverdue,
+    overall: percentCount > 0 ? Math.round(percentSum / percentCount) : 0
+  };
+}
+
+/* ========== الـ Render ========== */
+function renderDashboard(stats) {
+  document.getElementById('dashboard').style.display = '';
+  document.getElementById('filtersBar').style.display = '';
+
+  // الصف الأول
+  document.getElementById('totalProjects').textContent = stats.projects;
+  document.getElementById('totalMain').textContent = stats.totalMain;
+  document.getElementById('totalNear').textContent = stats.totalNear;
+  document.getElementById('overallPercent').textContent = stats.overall;
+  setTimeout(() => {
+    document.getElementById('overallProgressBar').style.width = stats.overall + '%';
+  }, 100);
+
+  // الصف الثاني - الفرعيات
+  const sub = stats.totalSub;
+  const pct = (n) => sub > 0 ? `${Math.round(n / sub * 100)}% من الفرعيات` : '—';
+  const inProgress = sub - stats.totalSubDone - stats.totalSubOverdue;
+
+  document.getElementById('totalSub').textContent = sub;
+  document.getElementById('totalSubDone').textContent = stats.totalSubDone;
+  document.getElementById('totalSubDonePct').textContent = pct(stats.totalSubDone);
+  document.getElementById('totalSubOverdue').textContent = stats.totalSubOverdue;
+  document.getElementById('totalSubOverduePct').textContent = pct(stats.totalSubOverdue);
+  document.getElementById('totalSubProgress').textContent = Math.max(0, inProgress);
+  document.getElementById('totalSubProgressPct').textContent = pct(Math.max(0, inProgress));
+}
+
+function renderProjectFilter(projects) {
+  const sel = document.getElementById('projectFilter');
+  // احتفظ بالقيمة الحالية
+  const current = sel.value;
+  sel.innerHTML = '<option value="">كل المشاريع</option>';
+  projects.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.name;
+    opt.textContent = p.name;
+    sel.appendChild(opt);
+  });
+  sel.value = current;
+}
+
+function renderContent(projects) {
+  const container = document.getElementById('content');
+
+  // تطبيق الفلاتر
+  const filtered = projects
+    .filter(p => !filters.project || p.name === filters.project)
+    .map(p => {
+      const tasks = p.tasks.filter(t => {
+        const status = computeStatus(t.percent, t.deadline);
+        if (filters.status && status !== filters.status) return false;
+        if (filters.nearOnly) {
+          const days = daysBetween(t.deadline);
+          if (days === null || days < 0 || days > NEAR_DEADLINE_DAYS || status === 'done') return false;
+        }
+        return true;
+      });
+      return { ...p, tasks };
+    })
+    .filter(p => p.tasks.length > 0);
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty">🔎 لا توجد مهام تطابق معايير التصفية</div>';
+    return;
+  }
+
+  let html = '';
+  filtered.forEach(project => {
+    html += `<div class="project-section">
+      <div class="project-header">
+        <div class="project-title">📁 ${escapeHTML(project.name)}</div>
+        <div class="project-badge">${project.tasks.length} مهمة</div>
+      </div>`;
+
+    project.tasks.forEach((t, idx) => {
+      const status = computeStatus(t.percent, t.deadline);
+      const si = STATUS_INFO[status];
+      const days = daysBetween(t.deadline);
+      let deadlineHtml = '';
+      if (t.deadline) {
+        let pillCls = 'days-ok', text = '';
+        if (status === 'done') { pillCls = 'days-done'; text = 'أُنجزت'; }
+        else if (days < 0) { pillCls = 'days-overdue'; text = `متأخر ${Math.abs(days)} يوم`; }
+        else if (days <= NEAR_DEADLINE_DAYS) { pillCls = 'days-near'; text = `باقي ${days} يوم`; }
+        else { text = `باقي ${days} يوم`; }
+        deadlineHtml = `<span class="deadline-pill ${pillCls}">📅 ${formatDate(t.deadline)} · ${text}</span>`;
+      }
+
+      const progressCls = status === 'done' ? 'complete' : status === 'overdue' ? 'overdue' : '';
+      const pct = Math.round(t.percent);
+
+      html += `<div class="task-card" data-task-idx="${idx}">
+        <div class="task-header" onclick="this.parentElement.classList.toggle('expanded')">
+          <div class="task-number">${t.numRaw}</div>
+          <div class="task-info">
+            <div class="task-name">${escapeHTML(t.name)}</div>
+            <div class="task-meta">
+              ${deadlineHtml}
+              <span>🧩 ${t.subtasks.length} مهمة فرعية</span>
+              ${t.owner ? `<span>👤 <strong>${escapeHTML(t.owner)}</strong></span>` : ''}
+            </div>
+          </div>
+          <div class="task-right">
+            <span class="status-badge ${si.cls}">${si.label}</span>
+            <div class="task-progress-wrap">
+              <span class="progress-percent">${pct}%</span>
+              <div class="progress-bar"><div class="progress-fill ${progressCls}" style="width:${pct}%"></div></div>
+            </div>
+          </div>
+        </div>`;
+
+      if (t.subtasks.length > 0) {
+        html += `<div class="subtasks">`;
+        t.subtasks.forEach(st => {
+          const sStatus = computeStatus(st.percent, null);
+          const sInfo = STATUS_INFO[sStatus];
+          const sPct = Math.round(st.percent);
+          const sCls = sStatus === 'done' ? 'complete' : '';
+          const details = [];
+          if (st.owner) details.push(`<span class="owner-chip">👤 ${escapeHTML(st.owner)}</span>`);
+          if (st.phase) details.push(`<span><span class="label">المرحلة:</span> ${escapeHTML(st.phase)}</span>`);
+          if (st.nextStep) details.push(`<span><span class="label">الخطوة القادمة:</span> ${escapeHTML(st.nextStep)}</span>`);
+          if (st.lastUpdate) details.push(`<span><span class="label">آخر تحديث:</span> ${escapeHTML(st.lastUpdate)}</span>`);
+
+          html += `<div class="subtask-row">
+            <div class="subtask-num">${st.numRaw}</div>
+            <div>
+              <div class="subtask-name">${escapeHTML(st.name)}</div>
+              ${details.length ? `<div class="subtask-details">${details.join('')}</div>` : ''}
+            </div>
+            <div class="subtask-progress">
+              <span class="progress-percent">${sPct}%</span>
+              <div class="progress-bar"><div class="progress-fill ${sCls}" style="width:${sPct}%"></div></div>
+            </div>
+            <span class="status-badge ${sInfo.cls}">${sInfo.label}</span>
+          </div>`;
+        });
+        html += `</div>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+  });
+  container.innerHTML = html;
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ========== الفلاتر ========== */
+function setupFilters(projects) {
+  document.getElementById('projectFilter').addEventListener('change', e => {
+    filters.project = e.target.value;
+    renderContent(projects);
+  });
+  document.getElementById('statusFilter').addEventListener('change', e => {
+    filters.status = e.target.value;
+    renderContent(projects);
+  });
+  const nearToggle = document.getElementById('nearDeadlineToggle');
+  const nearCB = document.getElementById('nearDeadline');
+  nearToggle.addEventListener('click', e => {
+    e.preventDefault();
+    nearCB.checked = !nearCB.checked;
+    nearToggle.classList.toggle('active', nearCB.checked);
+    filters.nearOnly = nearCB.checked;
+    renderContent(projects);
+  });
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    filters = { project: '', status: '', nearOnly: false };
+    document.getElementById('projectFilter').value = '';
+    document.getElementById('statusFilter').value = '';
+    nearCB.checked = false;
+    nearToggle.classList.remove('active');
+    renderContent(projects);
+  });
+}
+
+/* ========== إظهار/إخفاء شاشة الإعداد ========== */
+function showSetupScreen() {
+  document.getElementById('setupScreen').style.display = '';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('filtersBar').style.display = 'none';
+  document.getElementById('content').style.display = 'none';
+  document.getElementById('lastUpdated').textContent = '🔗 لم يتم الربط بعد';
+  document.getElementById('settingsBtn').style.display = 'none';
+}
+function hideSetupScreen() {
+  document.getElementById('setupScreen').style.display = 'none';
+  document.getElementById('content').style.display = '';
+  document.getElementById('settingsBtn').style.display = '';
+}
+
+/* ========== أحداث الإعدادات ========== */
+function setupEventHandlers() {
+  // زر حفظ الرابط من شاشة الإعداد
+  document.getElementById('saveUrlBtn').addEventListener('click', () => {
+    const input = document.getElementById('sheetUrlInput');
+    const url = input.value.trim();
+    if (!url) { input.focus(); input.style.borderColor = '#EF4444'; return; }
+    if (!isValidSheetUrl(url)) {
+      alert('الرابط لا يبدو صحيح. يجب أن يكون رابط Google Sheets منشور.');
+      input.focus(); return;
+    }
+    saveSheetUrl(url);
+    hideSetupScreen();
+    load();
+  });
+
+  // Enter في حقل الإدخال
+  document.getElementById('sheetUrlInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('saveUrlBtn').click();
+  });
+
+  // زر الإعدادات في الهيدر
+  document.getElementById('settingsBtn').addEventListener('click', () => {
+    document.getElementById('settingsUrlInput').value = getSheetUrl() || '';
+    document.getElementById('settingsModal').style.display = '';
+  });
+
+  // حفظ التغييرات من الإعدادات
+  document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+    const url = document.getElementById('settingsUrlInput').value.trim();
+    if (!isValidSheetUrl(url)) { alert('الرابط غير صحيح'); return; }
+    saveSheetUrl(url);
+    document.getElementById('settingsModal').style.display = 'none';
+    load();
+  });
+
+  // مسح الرابط
+  document.getElementById('clearUrlBtn').addEventListener('click', () => {
+    if (confirm('هل تريد مسح الرابط والبدء من جديد؟')) {
+      clearSheetUrl();
+      document.getElementById('settingsModal').style.display = 'none';
+      location.reload();
+    }
+  });
+
+  // إلغاء
+  document.getElementById('cancelSettingsBtn').addEventListener('click', () => {
+    document.getElementById('settingsModal').style.display = 'none';
+  });
+
+  // إغلاق modal عند الضغط خارجها
+  document.getElementById('settingsModal').addEventListener('click', e => {
+    if (e.target.id === 'settingsModal') e.target.style.display = 'none';
+  });
+}
+
+/* ========== التحميل ========== */
+async function load() {
+  const url = getSheetUrl();
+  if (!url) {
+    showSetupScreen();
+    return;
+  }
+
+  document.getElementById('lastUpdated').textContent = '⏳ جارٍ التحميل...';
+  document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div><div>جارٍ تحميل بيانات الشيت...</div></div>';
+
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    allTasks = processData(rows);
+
+    if (allTasks.length === 0) {
+      document.getElementById('content').innerHTML = '<div class="empty">📭 لم يتم العثور على مهام في الشيت. تأكد من أن الورقة تحتوي على بيانات بالهيكلة الصحيحة.</div>';
+      return;
+    }
+
+    const stats = computeStats(allTasks);
+    renderDashboard(stats);
+    renderProjectFilter(allTasks);
+    renderContent(allTasks);
+    setupFilters(allTasks);
+    document.getElementById('settingsBtn').style.display = '';
+
+    const now = new Date();
+    document.getElementById('lastUpdated').textContent =
+      `🔄 آخر تحديث: ${now.toLocaleTimeString('ar', {calendar:'gregory', numberingSystem:'latn', hour:'2-digit',minute:'2-digit'})}`;
+  } catch (err) {
+    document.getElementById('content').innerHTML = `
+      <div class="error-box">
+        <h3>❌ تعذر تحميل البيانات</h3>
+        <p>تأكد من:</p>
+        <ul style="margin-right:20px; margin-top:8px; line-height:1.8;">
+          <li>الشيت منشور للويب (Publish to web) بصيغة CSV</li>
+          <li>الرابط صحيح ويمكن الوصول إليه</li>
+          <li>وجود اتصال بالإنترنت</li>
+        </ul>
+        <code>${escapeHTML(err.message)}</code>
+        <div style="margin-top:16px;">
+          <button class="secondary-btn" onclick="document.getElementById('settingsBtn').click()">⚙️ فتح الإعدادات لتغيير الرابط</button>
+        </div>
+      </div>`;
+    document.getElementById('lastUpdated').textContent = '❌ فشل التحميل';
+    document.getElementById('settingsBtn').style.display = '';
+  }
+}
+
+setupEventHandlers();
+load();
+// إعادة التحميل كل 5 دقائق
+setInterval(() => { if (getSheetUrl()) load(); }, 5 * 60 * 1000);
+</script>
+</body>
+</html>
