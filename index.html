@@ -9,7 +9,6 @@
 body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;background:#FEFAF1;color:#2C1F15;min-height:100vh;}
 .wrap{max-width:980px;margin:0 auto;padding:20px;}
 .hdr{background:#795745;color:#fff;padding:1.4rem 1.75rem;border-radius:14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
-.hdr-brand{}
 .hdr-name{font-size:22px;font-weight:700;letter-spacing:.5px;}
 .hdr-en{font-size:10px;opacity:.65;letter-spacing:2px;margin-top:1px;}
 .hdr-sub{font-size:13px;opacity:.8;margin-top:5px;}
@@ -18,13 +17,25 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 .btn-refresh{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:8px 16px;border-radius:9px;cursor:pointer;font-size:13px;font-family:inherit;transition:.2s;}
 .btn-refresh:hover{background:rgba(255,255,255,.25);}
 
-.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.5rem;}
+/* ── Summary ── */
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:10px;}
 .sum-card{background:#fff;border:0.5px solid #DBC8BA;border-radius:12px;padding:1rem;text-align:center;}
 .sum-num{font-size:30px;font-weight:700;line-height:1;}
 .sum-lbl{font-size:12px;color:#7a6258;margin-top:6px;}
 
+/* ── Employee mini-cards ── */
+.emp-mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.5rem;}
+.emp-mini-card{background:#fff;border:0.5px solid #DBC8BA;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.emp-mini-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;}
+.emp-mini-info{flex:1;min-width:0;}
+.emp-mini-name{font-size:11px;color:#2C1F15;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.emp-mini-bar-row{display:flex;align-items:center;gap:5px;margin-top:4px;}
+.emp-mini-pct{font-size:11px;font-weight:700;white-space:nowrap;}
+
+/* ── Section header ── */
 .section-hdr{font-size:15px;font-weight:700;color:#795745;margin:1.5rem 0 .85rem;padding-bottom:8px;border-bottom:2px solid #DBC8BA;display:flex;align-items:center;gap:8px;}
 
+/* ── Alerts ── */
 .alert-item{border-radius:10px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:14px;}
 .alert-warn{background:#FFF8EC;border:0.5px solid #E07520;}
 .alert-over{background:#FFF1EE;border:0.5px solid #CB3917;}
@@ -33,22 +44,29 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 .alert-meta{font-size:11px;color:#7a6258;margin-top:3px;}
 .alert-badge{font-size:12px;font-weight:700;white-space:nowrap;padding:4px 12px;border-radius:20px;}
 
+/* ── Task groups ── */
 .task-group{background:#fff;border:0.5px solid #DBC8BA;border-radius:12px;margin-bottom:12px;overflow:hidden;}
-.group-hdr{padding:13px 16px;background:linear-gradient(135deg,#f7f2ed,#ede3da);border-bottom:0.5px solid #DBC8BA;display:flex;align-items:center;gap:12px;}
+.group-hdr{padding:13px 16px;background:linear-gradient(135deg,#f7f2ed,#ede3da);border-bottom:0.5px solid #DBC8BA;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;}
+.group-hdr:hover{background:linear-gradient(135deg,#f0e8e0,#e6d8cc);}
 .group-info{flex:1;}
 .group-name{font-size:14px;font-weight:700;color:#2C1F15;}
 .group-dl{font-size:11px;color:#7a6258;margin-top:3px;}
 .group-pct{text-align:center;min-width:64px;}
 .group-pct-num{font-size:22px;font-weight:800;color:#795745;line-height:1;}
 .group-pct-lbl{font-size:10px;color:#9a7060;margin-top:2px;}
+.group-chevron{font-size:16px;color:#795745;transition:transform .25s;margin-right:4px;}
+.group-chevron.open{transform:rotate(180deg);}
 .group-bar-wrap{padding:0 16px 6px;background:linear-gradient(135deg,#f7f2ed,#ede3da);}
 .group-bar-bg{height:5px;background:rgba(121,87,69,.2);border-radius:3px;}
 .group-bar-fill{height:100%;border-radius:3px;transition:width .8s ease;}
 
+/* ── Sub-tasks (collapsible) ── */
+.subs-wrap{overflow:hidden;transition:max-height .3s ease;}
 .sub-row{padding:11px 16px;border-bottom:0.5px solid #f5ede6;display:flex;align-items:center;gap:12px;}
-.sub-row:last-child{border-bottom:none;}
+.sub-row:last-of-type{border-bottom:none;}
 .sub-info{flex:1;min-width:0;}
-.sub-name{font-size:13px;color:#2C1F15;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sub-name{font-size:13px;color:#2C1F15;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sub-meta{font-size:11px;color:#9a7060;margin-bottom:5px;}
 .sub-bar-row{display:flex;align-items:center;gap:8px;}
 .prog-bar{height:7px;background:#EDE0D4;border-radius:4px;flex:1;overflow:hidden;}
 .prog-fill{height:100%;border-radius:4px;transition:width .8s ease;}
@@ -63,11 +81,11 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 .sub-owner{font-size:11px;color:#9a7060;margin-top:4px;}
 .sub-details{padding:0 16px 12px;background:#fdf9f6;border-bottom:0.5px solid #f5ede6;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 .sub-detail-box{background:#fff;border:0.5px solid #EDE0D4;border-radius:8px;padding:8px 12px;}
-.sub-detail-lbl{font-size:10px;color:#9a7060;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:4px;}
+.sub-detail-lbl{font-size:10px;color:#9a7060;font-weight:600;margin-bottom:4px;}
 .sub-detail-val{font-size:12px;color:#2C1F15;line-height:1.5;}
 .sub-detail-empty{font-size:12px;color:#C0B0A8;font-style:italic;}
-@media(max-width:650px){.sub-details{grid-template-columns:1fr;}}
 
+/* ── Employee section (bottom) ── */
 .emp-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;background:#fff;border:0.5px solid #DBC8BA;border-radius:10px;padding:12px 16px;}
 .emp-avatar{width:38px;height:38px;border-radius:50%;background:#795745;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;flex-shrink:0;}
 .emp-info{flex:1;}
@@ -83,6 +101,8 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
   .summary-grid{grid-template-columns:repeat(3,1fr);}
   .hdr{flex-direction:column;align-items:flex-start;gap:12px;}
   .sub-right{min-width:90px;}
+  .sub-details{grid-template-columns:1fr;}
+  .emp-mini-grid{grid-template-columns:repeat(2,1fr);}
 }
 </style>
 </head>
@@ -90,7 +110,7 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 <div class="wrap">
 
   <div class="hdr">
-    <div class="hdr-brand">
+    <div>
       <div class="hdr-name">فوزان هيلز</div>
       <div class="hdr-en">FAWZAN HILLS</div>
       <div class="hdr-sub">لوحة تتبع المهام</div>
@@ -102,7 +122,7 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
   </div>
 
   <div id="main-content">
-    <div class="loading-state" id="loading">جاري تحميل البيانات من Google Sheets...</div>
+    <div class="loading-state">جاري تحميل البيانات من Google Sheets...</div>
   </div>
 
   <div class="footer">فوزان هيلز &nbsp;|&nbsp; FAWZAN HILLS &nbsp;•&nbsp; لوحة تتبع المهام</div>
@@ -111,7 +131,9 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 <script>
 const SHEET_ID = '1zahRpCJILmA7LyzKMFAnzOhR2GlmekiFcDcgrRduSd0';
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/export?format=csv';
+const AV_COLORS = ['#795745','#9a6b50','#5D4037','#6D4C41','#8D6E63','#7B5E57','#4E342E','#A1887F'];
 
+/* ── CSV parsing ── */
 function parseLine(line) {
   const res = []; let cur = '', inQ = false;
   for (let i = 0; i <= line.length; i++) {
@@ -123,15 +145,13 @@ function parseLine(line) {
   }
   return res;
 }
-
 function parseCSV(text) {
   const lines = text.split('\n');
   const headers = parseLine(lines[0]).map(h => h.trim());
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
-    const l = lines[i];
-    if (!l.trim()) continue;
-    const vals = parseLine(l);
+    if (!lines[i].trim()) continue;
+    const vals = parseLine(lines[i]);
     const row = {};
     headers.forEach((h, idx) => row[h] = (vals[idx] || '').trim());
     rows.push(row);
@@ -139,16 +159,15 @@ function parseCSV(text) {
   return rows;
 }
 
+/* ── Helpers ── */
 function parseProgress(val) {
   if (!val || !val.trim()) return null;
   val = val.trim();
   if (val.endsWith('%')) { const n = parseFloat(val); return isNaN(n) ? null : n; }
   const n = parseFloat(val);
   if (isNaN(n)) return null;
-  if (n >= 0 && n <= 1) return n * 100;
-  return n;
+  return (n >= 0 && n <= 1) ? n * 100 : n;
 }
-
 function parseDate(val) {
   if (!val || !val.trim()) return null;
   val = val.trim();
@@ -158,53 +177,31 @@ function parseDate(val) {
   if (m2) return new Date(+m2[1], +m2[2]-1, +m2[3]);
   return null;
 }
-
 function daysLeft(d) {
   if (!d) return null;
-  const today = new Date(); today.setHours(0,0,0,0);
-  return Math.ceil((d - today) / 86400000);
+  const t = new Date(); t.setHours(0,0,0,0);
+  return Math.ceil((d - t) / 86400000);
 }
-
 function splitEmployees(val) {
   if (!val || !val.trim()) return [];
   return val.split(/\+/).map(e => e.trim()).filter(e => e && e.length > 1);
 }
-
-function isValidRow(row) {
-  const num = (row['#'] || '').trim();
+function isValidRow(r) {
+  const num = (r['#'] || '').trim();
   if (!num || !/^\d+(\.\d+)?$/.test(num)) return false;
-  const name = (row['اسم المهمة'] || '').trim();
-  return !!name;
+  return !!(r['اسم المهمة'] || '').trim();
 }
-
-function isMainTask(row) {
-  return row['المشروع'] === 'مهام';
+function isMain(r) { return r['المشروع'] === 'مهام'; }
+function initials(name) {
+  const p = name.trim().split(/\s+/);
+  return p.length >= 2 ? p[0][0] + p[1][0] : name.trim().slice(0,2);
 }
-
-function groupTasks(rows) {
-  const groups = []; let cur = null;
-  for (const r of rows) {
-    if (!isValidRow(r)) continue;
-    if (isMainTask(r)) { cur = { main: r, subs: [] }; groups.push(cur); }
-    else if (cur) cur.subs.push(r);
-  }
-  return groups;
-}
-
-function groupAvg(g) {
-  let t = 0, c = 0;
-  for (const s of g.subs) { const p = parseProgress(s['الإنجاز %']); if (p !== null) { t += p; c++; } }
-  return c ? Math.round(t / c) : 0;
-}
-
-function getProgColor(pct, dl) {
+function getColor(pct, dl) {
   if (pct === 100) return '#2E7D32';
   if (dl !== null && dl < 0) return '#CB3917';
   if (dl !== null && dl <= 5) return '#E07520';
-  if (pct > 0) return '#795745';
-  return '#B0A098';
+  return pct > 0 ? '#795745' : '#B0A098';
 }
-
 function getBadge(pct, dl) {
   if (pct === 100) return '<span class="badge badge-done">مكتملة ✓</span>';
   if (dl !== null && dl < 0) return '<span class="badge badge-late">متأخرة</span>';
@@ -214,41 +211,92 @@ function getBadge(pct, dl) {
   return '<span class="badge badge-wait">لم تبدأ</span>';
 }
 
-function initials(name) {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) return parts[0][0] + parts[1][0];
-  return name.trim().slice(0, 2);
+/* ── Group tasks ── */
+function groupTasks(rows) {
+  const groups = []; let cur = null;
+  for (const r of rows) {
+    if (!isValidRow(r)) continue;
+    if (isMain(r)) { cur = { main: r, subs: [] }; groups.push(cur); }
+    else if (cur) cur.subs.push(r);
+  }
+  return groups;
+}
+function groupAvg(g) {
+  let t = 0, c = 0;
+  for (const s of g.subs) { const p = parseProgress(s['الإنجاز %']); if (p !== null) { t += p; c++; } }
+  return c ? Math.round(t / c) : 0;
 }
 
+/* ── Employee data ── */
+function calcEmployees(rows) {
+  const map = {};
+  for (const r of rows) {
+    if (!isValidRow(r) || isMain(r)) continue;
+    const p = parseProgress(r['الإنجاز %']);
+    if (p === null) continue;
+    for (const e of splitEmployees(r['المسؤول'])) {
+      if (!map[e]) map[e] = { t: 0, c: 0, idx: Object.keys(map).length };
+      map[e].t += p; map[e].c++;
+    }
+  }
+  return Object.entries(map)
+    .map(([name, d]) => ({ name, pct: Math.round(d.t / d.c), count: d.c, idx: d.idx }))
+    .sort((a, b) => b.pct - a.pct);
+}
+
+/* ── Render: summary cards ── */
 function renderSummary(rows) {
-  let total = 0, done = 0, inProg = 0, late = 0, notStarted = 0;
+  let total = 0, done = 0, inProg = 0, late = 0;
   const today = new Date(); today.setHours(0,0,0,0);
   for (const r of rows) {
-    if (!isValidRow(r) || isMainTask(r)) continue;
+    if (!isValidRow(r) || isMain(r)) continue;
     total++;
     const p = parseProgress(r['الإنجاز %']) || 0;
     const dl = parseDate(r['الديدلاين']);
     if (p === 100) done++;
     else if (dl && dl < today) late++;
     else if (p > 0) inProg++;
-    else notStarted++;
   }
-  const completionRate = total ? Math.round((done / total) * 100) : 0;
+  const rate = total ? Math.round((done / total) * 100) : 0;
   return `
     <div class="summary-grid">
       <div class="sum-card"><div class="sum-num" style="color:#795745;">${total}</div><div class="sum-lbl">إجمالي المهام</div></div>
       <div class="sum-card"><div class="sum-num" style="color:#2E7D32;">${done}</div><div class="sum-lbl">مكتملة</div></div>
       <div class="sum-card"><div class="sum-num" style="color:#8B6914;">${inProg}</div><div class="sum-lbl">قيد التنفيذ</div></div>
       <div class="sum-card"><div class="sum-num" style="color:#CB3917;">${late}</div><div class="sum-lbl">متأخرة</div></div>
-      <div class="sum-card"><div class="sum-num" style="color:#795745;">${completionRate}%</div><div class="sum-lbl">نسبة الإنجاز</div></div>
-    </div>
-  `;
+      <div class="sum-card"><div class="sum-num" style="color:#795745;">${rate}%</div><div class="sum-lbl">نسبة الإنجاز</div></div>
+    </div>`;
 }
 
+/* ── Render: employee mini-cards (summary row) ── */
+function renderEmpMini(rows) {
+  const list = calcEmployees(rows);
+  if (!list.length) return '';
+  let html = '<div class="emp-mini-grid">';
+  list.forEach(({ name, pct, count, idx }) => {
+    const col = AV_COLORS[idx % AV_COLORS.length];
+    const pc = getColor(pct, null);
+    html += `
+      <div class="emp-mini-card">
+        <div class="emp-mini-avatar" style="background:${col};">${initials(name)}</div>
+        <div class="emp-mini-info">
+          <div class="emp-mini-name" title="${name}">${name}</div>
+          <div class="emp-mini-bar-row">
+            <div class="prog-bar" style="height:6px;flex:1;"><div class="prog-fill" style="width:${pct}%;background:${pc};height:100%;"></div></div>
+            <span class="emp-mini-pct" style="color:${pc};">${pct}%</span>
+          </div>
+          <div style="font-size:10px;color:#9a7060;margin-top:3px;">${count} مهمة</div>
+        </div>
+      </div>`;
+  });
+  return html + '</div>';
+}
+
+/* ── Render: deadline alerts ── */
 function renderAlerts(rows) {
   const alerts = [];
   for (const r of rows) {
-    if (!isValidRow(r) || isMainTask(r)) continue;
+    if (!isValidRow(r) || isMain(r)) continue;
     const p = parseProgress(r['الإنجاز %']) || 0;
     if (p === 100) continue;
     const dl = parseDate(r['الديدلاين']);
@@ -258,65 +306,56 @@ function renderAlerts(rows) {
   }
   if (!alerts.length) return '';
   alerts.sort((a, b) => a.d - b.d);
-
   let html = '<div class="section-hdr">⚠ تنبيهات المواعيد النهائية</div>';
   for (const { r, d } of alerts) {
     const isOver = d < 0;
     const p = parseProgress(r['الإنجاز %']) || 0;
     const label = d < 0
-      ? `متأخرة بـ ${Math.abs(d)} ${Math.abs(d) === 1 ? 'يوم' : 'أيام'}`
-      : d === 0 ? 'ينتهي اليوم!' : `ينتهي خلال ${d} ${d === 1 ? 'يوم' : 'أيام'}`;
-    const badgeStyle = isOver
-      ? 'background:#CB3917;color:#fff;'
-      : 'background:#E07520;color:#fff;';
+      ? `متأخرة بـ ${Math.abs(d)} ${Math.abs(d)===1?'يوم':'أيام'}`
+      : d === 0 ? 'ينتهي اليوم!' : `ينتهي خلال ${d} ${d===1?'يوم':'أيام'}`;
+    const bs = isOver ? 'background:#CB3917;color:#fff;' : 'background:#E07520;color:#fff;';
     html += `
-      <div class="alert-item ${isOver ? 'alert-over' : 'alert-warn'}">
+      <div class="alert-item ${isOver?'alert-over':'alert-warn'}">
         <div class="alert-info">
           <div class="alert-name">${r['اسم المهمة']}</div>
-          <div class="alert-meta">${r['المسؤول'] ? 'المسؤول: ' + r['المسؤول'] + ' &nbsp;•&nbsp; ' : ''}الإنجاز: ${Math.round(p)}% &nbsp;•&nbsp; الديدلاين: ${r['الديدلاين']}</div>
+          <div class="alert-meta">${r['المسؤول']?'المسؤول: '+r['المسؤول']+' &nbsp;•&nbsp; ':''}الإنجاز: ${Math.round(p)}% &nbsp;•&nbsp; الديدلاين: ${r['الديدلاين']}</div>
         </div>
-        <span class="alert-badge" style="${badgeStyle}">${label}</span>
+        <span class="alert-badge" style="${bs}">${label}</span>
       </div>`;
   }
   return html;
 }
 
+/* ── Render: tasks (collapsible) ── */
+let groupCounter = 0;
 function renderTasks(groups) {
+  groupCounter = 0;
   let html = '<div class="section-hdr">📋 نسبة الإنجاز للمهام</div>';
   for (const g of groups) {
+    const id = 'grp-' + (groupCounter++);
     const gPct = groupAvg(g);
-    const gColor = getProgColor(gPct, null);
+    const gCol = getColor(gPct, null);
     const mainName = g.main['اسم المهمة'] || '';
     const mainDl = g.main['الديدلاين'];
-    html += `
-      <div class="task-group">
-        <div class="group-hdr">
-          <div class="group-info">
-            <div class="group-name">${mainName}</div>
-            ${mainDl ? '<div class="group-dl">الديدلاين: ' + mainDl + '</div>' : ''}
-          </div>
-          <div class="group-pct">
-            <div class="group-pct-num" style="color:${gColor};">${gPct}%</div>
-            <div class="group-pct-lbl">إجمالي</div>
-          </div>
-        </div>
-        <div class="group-bar-wrap">
-          <div class="group-bar-bg"><div class="group-bar-fill" style="width:${gPct}%;background:${gColor};"></div></div>
-        </div>`;
+
+    /* sub-tasks HTML */
+    let subsHtml = '';
     for (const s of g.subs) {
       const p = parseProgress(s['الإنجاز %']);
       const pct = p !== null ? Math.round(p) : 0;
       const dl = parseDate(s['الديدلاين']);
       const d = daysLeft(dl);
-      const pc = getProgColor(pct, d);
-      const stage = (s['المرحلة الحالية'] || '').trim();
-      const nextStep = (s['الخطوة القادمة'] || '').trim();
-      const lastUpdate = (s['تاريخ آخر تحديث'] || '').trim();
-      const hasDetails = stage || nextStep || lastUpdate;
-      html += `
+      const pc = getColor(pct, d);
+      const stage = (s['المرحلة الحالية']||'').trim();
+      const next  = (s['الخطوة القادمة']||'').trim();
+      const upd   = (s['تاريخ آخر تحديث']||'').trim();
+      const dlTxt = s['الديدلاين'] ? s['الديدلاين'] : '';
+      const hasDetails = stage || next || upd;
+      subsHtml += `
         <div class="sub-row">
           <div class="sub-info">
-            <div class="sub-name" title="${s['اسم المهمة'] || ''}">${s['اسم المهمة'] || ''}</div>
+            <div class="sub-name" title="${s['اسم المهمة']||''}">${s['اسم المهمة']||''}</div>
+            ${dlTxt ? `<div class="sub-meta">📅 الديدلاين: ${dlTxt}</div>` : ''}
             <div class="sub-bar-row">
               <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${pc};"></div></div>
               <span class="prog-pct" style="color:${pc};">${pct}%</span>
@@ -324,56 +363,61 @@ function renderTasks(groups) {
           </div>
           <div class="sub-right">
             ${getBadge(pct, d)}
-            ${s['المسؤول'] ? '<div class="sub-owner">' + s['المسؤول'] + '</div>' : ''}
+            ${s['المسؤول'] ? '<div class="sub-owner">'+s['المسؤول']+'</div>' : ''}
           </div>
         </div>
         ${hasDetails ? `
         <div class="sub-details">
           <div class="sub-detail-box">
             <div class="sub-detail-lbl">◈ المرحلة الحالية</div>
-            ${stage ? '<div class="sub-detail-val">' + stage + '</div>' : '<div class="sub-detail-empty">—</div>'}
+            ${stage ? '<div class="sub-detail-val">'+stage+'</div>' : '<div class="sub-detail-empty">—</div>'}
           </div>
           <div class="sub-detail-box">
             <div class="sub-detail-lbl">◉ الخطوة القادمة</div>
-            ${nextStep ? '<div class="sub-detail-val">' + nextStep + '</div>' : '<div class="sub-detail-empty">—</div>'}
+            ${next ? '<div class="sub-detail-val">'+next+'</div>' : '<div class="sub-detail-empty">—</div>'}
           </div>
           <div class="sub-detail-box">
             <div class="sub-detail-lbl">◷ آخر تحديث</div>
-            ${lastUpdate ? '<div class="sub-detail-val">' + lastUpdate + '</div>' : '<div class="sub-detail-empty">—</div>'}
+            ${upd ? '<div class="sub-detail-val">'+upd+'</div>' : '<div class="sub-detail-empty">—</div>'}
           </div>
         </div>` : ''}`;
     }
-    html += '</div>';
+
+    html += `
+      <div class="task-group">
+        <div class="group-hdr" onclick="toggleGroup('${id}')">
+          <span class="group-chevron open" id="chev-${id}">▾</span>
+          <div class="group-info">
+            <div class="group-name">${mainName}</div>
+            ${mainDl ? '<div class="group-dl">📅 الديدلاين: '+mainDl+'</div>' : ''}
+          </div>
+          <div class="group-pct">
+            <div class="group-pct-num" style="color:${gCol};">${gPct}%</div>
+            <div class="group-pct-lbl">إجمالي</div>
+          </div>
+        </div>
+        <div class="group-bar-wrap">
+          <div class="group-bar-bg"><div class="group-bar-fill" style="width:${gPct}%;background:${gCol};"></div></div>
+        </div>
+        <div class="subs-wrap" id="${id}" style="max-height:9999px;">
+          ${subsHtml}
+        </div>
+      </div>`;
   }
   return html;
 }
 
+/* ── Render: employee detail section ── */
 function renderEmployees(rows) {
-  const map = {};
-  for (const r of rows) {
-    if (!isValidRow(r) || isMainTask(r)) continue;
-    const p = parseProgress(r['الإنجاز %']);
-    if (p === null) continue;
-    const emps = splitEmployees(r['المسؤول']);
-    for (const e of emps) {
-      if (!map[e]) map[e] = { t: 0, c: 0 };
-      map[e].t += p; map[e].c++;
-    }
-  }
-  const list = Object.entries(map)
-    .map(([name, d]) => ({ name, pct: Math.round(d.t / d.c), count: d.c }))
-    .sort((a, b) => b.pct - a.pct);
-
+  const list = calcEmployees(rows);
   if (!list.length) return '';
-
-  let html = '<div class="section-hdr">👤 نسبة الإنجاز لكل موظف</div>';
-  const avatarColors = ['#795745','#9a6b50','#5D4037','#6D4C41','#8D6E63','#7B5E57','#4E342E'];
-  list.forEach(({ name, pct, count }, i) => {
-    const pc = getProgColor(pct, null);
-    const av = avatarColors[i % avatarColors.length];
+  let html = '<div class="section-hdr">👤 تفاصيل إنجاز الموظفين</div>';
+  list.forEach(({ name, pct, count, idx }) => {
+    const col = AV_COLORS[idx % AV_COLORS.length];
+    const pc = getColor(pct, null);
     html += `
       <div class="emp-row">
-        <div class="emp-avatar" style="background:${av};">${initials(name)}</div>
+        <div class="emp-avatar" style="background:${col};">${initials(name)}</div>
         <div class="emp-info">
           <div class="emp-name">${name}</div>
           <div class="emp-bar-row">
@@ -387,28 +431,41 @@ function renderEmployees(rows) {
   return html;
 }
 
+/* ── Toggle collapse ── */
+function toggleGroup(id) {
+  const el = document.getElementById(id);
+  const chev = document.getElementById('chev-' + id);
+  if (!el) return;
+  if (el.style.maxHeight === '0px') {
+    el.style.maxHeight = '9999px';
+    chev.classList.add('open');
+  } else {
+    el.style.maxHeight = '0px';
+    chev.classList.remove('open');
+  }
+}
+
+/* ── Load data ── */
 async function loadData() {
   const cont = document.getElementById('main-content');
-  cont.innerHTML = '<div class="loading-state" id="loading">جاري تحميل البيانات من Google Sheets...</div>';
-
+  cont.innerHTML = '<div class="loading-state">جاري تحميل البيانات من Google Sheets...</div>';
   try {
     const resp = await fetch(CSV_URL + '&t=' + Date.now());
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const text = await resp.text();
     const rows = parseCSV(text);
     const groups = groupTasks(rows);
-
     const now = new Date();
     document.getElementById('update-time').textContent =
       'آخر تحديث: ' + now.toLocaleDateString('ar-SA') + ' ' +
       String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-
     cont.innerHTML =
       renderSummary(rows) +
+      '<div class="section-hdr">👥 نسبة إنجاز الموظفين</div>' +
+      renderEmpMini(rows) +
       renderAlerts(rows) +
       renderTasks(groups) +
       renderEmployees(rows);
-
   } catch (err) {
     cont.innerHTML = `
       <div class="error-state">
