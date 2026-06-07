@@ -386,7 +386,7 @@ function renderTasks(groups) {
     html += `
       <div class="task-group">
         <div class="group-hdr" onclick="toggleGroup('${id}')">
-          <span class="group-chevron open" id="chev-${id}">▾</span>
+          <span class="group-chevron" id="chev-${id}">▾</span>
           <div class="group-info">
             <div class="group-name">${mainName}</div>
             ${mainDl ? '<div class="group-dl">📅 الديدلاين: '+mainDl+'</div>' : ''}
@@ -399,7 +399,7 @@ function renderTasks(groups) {
         <div class="group-bar-wrap">
           <div class="group-bar-bg"><div class="group-bar-fill" style="width:${gPct}%;background:${gCol};"></div></div>
         </div>
-        <div class="subs-wrap" id="${id}" style="max-height:9999px;">
+        <div class="subs-wrap" id="${id}" style="max-height:0px;">
           ${subsHtml}
         </div>
       </div>`;
