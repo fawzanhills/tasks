@@ -43,6 +43,11 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 .alert-name{font-size:13px;font-weight:600;color:#2C1F15;}
 .alert-meta{font-size:11px;color:#7a6258;margin-top:3px;}
 .alert-badge{font-size:12px;font-weight:700;white-space:nowrap;padding:4px 12px;border-radius:20px;}
+.alert-item{cursor:pointer;transition:box-shadow .2s,transform .15s;}
+.alert-item:hover{box-shadow:0 3px 12px rgba(121,87,69,.18);transform:translateY(-1px);}
+.alert-item:hover .alert-name::after{content:' ←';color:#795745;font-size:11px;}
+@keyframes sub-highlight{0%{background:#FFF3CD;}60%{background:#FFF3CD;}100%{background:transparent;}}
+.sub-row-highlight{animation:sub-highlight 1.8s ease forwards;}
 
 /* ── Task groups ── */
 .task-group{background:#fff;border:0.5px solid #DBC8BA;border-radius:12px;margin-bottom:12px;overflow:hidden;}
@@ -315,7 +320,7 @@ function renderAlerts(rows) {
       : d === 0 ? 'ينتهي اليوم!' : `ينتهي خلال ${d} ${d===1?'يوم':'أيام'}`;
     const bs = isOver ? 'background:#CB3917;color:#fff;' : 'background:#E07520;color:#fff;';
     html += `
-      <div class="alert-item ${isOver?'alert-over':'alert-warn'}">
+      <div class="alert-item ${isOver?'alert-over':'alert-warn'}" onclick="jumpToTask(${JSON.stringify(r['اسم المهمة']||'')})">
         <div class="alert-info">
           <div class="alert-name">${r['اسم المهمة']}</div>
           <div class="alert-meta">${r['المسؤول']?'المسؤول: '+r['المسؤول']+' &nbsp;•&nbsp; ':''}الإنجاز: ${Math.round(p)}% &nbsp;•&nbsp; الديدلاين: ${r['الديدلاين']}</div>
@@ -352,7 +357,7 @@ function renderTasks(groups) {
       const dlTxt = s['الديدلاين'] ? s['الديدلاين'] : '';
       const hasDetails = stage || next || upd;
       subsHtml += `
-        <div class="sub-row">
+        <div class="sub-row" data-task="${(s['اسم المهمة']||'').replace(/"/g,'&quot;')}">
           <div class="sub-info">
             <div class="sub-name" title="${s['اسم المهمة']||''}">${s['اسم المهمة']||''}</div>
             ${dlTxt ? `<div class="sub-meta">📅 الديدلاين: ${dlTxt}</div>` : ''}
@@ -443,6 +448,27 @@ function toggleGroup(id) {
     el.style.maxHeight = '0px';
     chev.classList.remove('open');
   }
+}
+
+/* ── Jump to task from alert ── */
+function jumpToTask(name) {
+  const subRow = document.querySelector(`.sub-row[data-task="${name.replace(/"/g,'\\"')}"]`);
+  if (!subRow) return;
+
+  // Open the parent group if collapsed
+  const subsWrap = subRow.closest('.subs-wrap');
+  if (subsWrap && subsWrap.style.maxHeight === '0px') {
+    toggleGroup(subsWrap.id);
+  }
+
+  // Scroll then highlight after the expand animation
+  setTimeout(() => {
+    subRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    subRow.classList.remove('sub-row-highlight');
+    void subRow.offsetWidth; // force reflow to restart animation
+    subRow.classList.add('sub-row-highlight');
+    setTimeout(() => subRow.classList.remove('sub-row-highlight'), 2000);
+  }, 320);
 }
 
 /* ── Load data ── */
