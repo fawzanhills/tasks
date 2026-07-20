@@ -24,25 +24,32 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 .sum-lbl{font-size:12px;color:#7a6258;margin-top:6px;}
 
 /* ── Employee mini-cards ── */
-.emp-mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.5rem;}
-.emp-mini-card{background:#fff;border:0.5px solid #DBC8BA;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
-.emp-mini-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;}
+.emp-mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:1.5rem;}
+.emp-mini-card{background:#fff;border:0.5px solid #DBC8BA;border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;}
+.emp-mini-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;}
 .emp-mini-info{flex:1;min-width:0;}
 .emp-mini-name{font-size:11px;color:#2C1F15;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .emp-mini-bar-row{display:flex;align-items:center;gap:5px;margin-top:4px;}
 .emp-mini-pct{font-size:11px;font-weight:700;white-space:nowrap;}
+.emp-mini-meta{font-size:10px;color:#9a7060;margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.emp-incomplete{color:#CB3917;font-weight:600;}
+.spd-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;display:inline-block;margin-top:4px;}
+.spd-early{background:#E8F5E9;color:#2E7D32;}
+.spd-late{background:#FEEEEC;color:#CB3917;}
+.spd-ontime{background:#E3F2FD;color:#1565C0;}
 
 /* ── Section header ── */
 .section-hdr{font-size:15px;font-weight:700;color:#795745;margin:1.5rem 0 .85rem;padding-bottom:8px;border-bottom:2px solid #DBC8BA;display:flex;align-items:center;gap:8px;}
 
 /* ── Alerts ── */
-.alert-item{border-radius:10px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .15s,box-shadow .15s;}
-.alert-item:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(121,87,69,.12);}
-.alert-item:active{transform:translateY(0);}
+.alert-item{border-radius:10px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:box-shadow .2s,transform .15s;}
+.alert-item:hover{box-shadow:0 3px 14px rgba(121,87,69,.2);transform:translateY(-1px);}
 .alert-warn{background:#FFF8EC;border:0.5px solid #E07520;}
 .alert-over{background:#FFF1EE;border:0.5px solid #CB3917;}
 .alert-info{flex:1;}
 .alert-name{font-size:13px;font-weight:600;color:#2C1F15;}
+.alert-name::after{content:' ↓';font-size:11px;opacity:0;transition:opacity .2s;}
+.alert-item:hover .alert-name::after{opacity:1;}
 .alert-meta{font-size:11px;color:#7a6258;margin-top:3px;}
 .alert-badge{font-size:12px;font-weight:700;white-space:nowrap;padding:4px 12px;border-radius:20px;}
 
@@ -62,10 +69,9 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 .group-bar-bg{height:5px;background:rgba(121,87,69,.2);border-radius:3px;}
 .group-bar-fill{height:100%;border-radius:3px;transition:width .8s ease;}
 
-/* ── Sub-tasks (collapsible) ── */
+/* ── Sub-tasks ── */
 .subs-wrap{overflow:hidden;transition:max-height .3s ease;}
-.sub-row{padding:11px 16px;border-bottom:0.5px solid #f5ede6;display:flex;align-items:center;gap:12px;scroll-margin-top:16px;transition:background .4s;}
-.sub-row.task-highlight{background:#FFF8EC;box-shadow:inset 0 0 0 2px #E07520;}
+.sub-row{padding:11px 16px;border-bottom:0.5px solid #f5ede6;display:flex;align-items:center;gap:12px;}
 .sub-row:last-of-type{border-bottom:none;}
 .sub-info{flex:1;min-width:0;}
 .sub-name{font-size:13px;color:#2C1F15;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -74,7 +80,7 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 .prog-bar{height:7px;background:#EDE0D4;border-radius:4px;flex:1;overflow:hidden;}
 .prog-fill{height:100%;border-radius:4px;transition:width .8s ease;}
 .prog-pct{font-size:12px;font-weight:700;min-width:38px;text-align:right;}
-.sub-right{text-align:center;min-width:110px;}
+.sub-right{text-align:center;min-width:115px;}
 .badge{font-size:11px;padding:3px 10px;border-radius:12px;font-weight:600;display:inline-block;}
 .badge-done{background:#E8F5E9;color:#2E7D32;}
 .badge-prog{background:#FFF8E1;color:#8B6914;}
@@ -82,11 +88,24 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 .badge-late{background:#FEEEEC;color:#CB3917;}
 .badge-warn{background:#FFF3E0;color:#E07520;}
 .sub-owner{font-size:11px;color:#9a7060;margin-top:4px;}
+
+/* ── Sub-details box ── */
 .sub-details{padding:0 16px 12px;background:#fdf9f6;border-bottom:0.5px solid #f5ede6;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 .sub-detail-box{background:#fff;border:0.5px solid #EDE0D4;border-radius:8px;padding:8px 12px;}
 .sub-detail-lbl{font-size:10px;color:#9a7060;font-weight:600;margin-bottom:4px;}
 .sub-detail-val{font-size:12px;color:#2C1F15;line-height:1.5;}
 .sub-detail-empty{font-size:12px;color:#C0B0A8;font-style:italic;}
+
+/* ── Completion date (100%) ── */
+.completion-strip{padding:8px 16px 12px;background:#f0faf1;border-bottom:0.5px solid #c8e6c9;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.completion-date-box{display:flex;align-items:center;gap:8px;}
+.completion-date-lbl{font-size:11px;color:#2E7D32;font-weight:700;}
+.completion-date-val{font-size:12px;color:#2C1F15;font-weight:600;background:#fff;border:1px solid #c8e6c9;border-radius:6px;padding:3px 10px;}
+.completion-date-missing{font-size:11px;color:#CB3917;font-weight:700;background:#FFF1EE;border:1px dashed #CB3917;border-radius:6px;padding:4px 10px;display:flex;align-items:center;gap:5px;}
+.task-speed-badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px;}
+.task-speed-early{background:#E8F5E9;color:#2E7D32;}
+.task-speed-late{background:#FEEEEC;color:#CB3917;}
+.task-speed-ontime{background:#E3F2FD;color:#1565C0;}
 
 /* ── Employee section (bottom) ── */
 .emp-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;background:#fff;border:0.5px solid #DBC8BA;border-radius:10px;padding:12px 16px;}
@@ -95,6 +114,10 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 .emp-name{font-size:13px;font-weight:600;color:#2C1F15;margin-bottom:5px;}
 .emp-bar-row{display:flex;align-items:center;gap:8px;}
 .emp-count{font-size:11px;color:#9a7060;white-space:nowrap;min-width:50px;text-align:left;}
+
+/* ── Highlight animation (for jumpToTask) ── */
+@keyframes rowPulse{0%{background:#FFF9C4;}65%{background:#FFF9C4;}100%{background:transparent;}}
+.sub-row-highlight{animation:rowPulse 2s ease forwards;}
 
 .loading-state{text-align:center;padding:3rem;color:#795745;background:#fff;border-radius:14px;border:0.5px solid #DBC8BA;}
 .error-state{text-align:center;padding:2rem;background:#fff;border-radius:14px;border:0.5px solid #DBC8BA;}
@@ -106,6 +129,7 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
   .sub-right{min-width:90px;}
   .sub-details{grid-template-columns:1fr;}
   .emp-mini-grid{grid-template-columns:repeat(2,1fr);}
+  .completion-strip{flex-direction:column;align-items:flex-start;}
 }
 </style>
 </head>
@@ -133,7 +157,7 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 
 <script>
 const SHEET_ID = '1zahRpCJILmA7LyzKMFAnzOhR2GlmekiFcDcgrRduSd0';
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/export?format=csv';
+const CSV_URL  = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/export?format=csv';
 const AV_COLORS = ['#795745','#9a6b50','#5D4037','#6D4C41','#8D6E63','#7B5E57','#4E342E','#A1887F'];
 
 /* ── CSV parsing ── */
@@ -185,6 +209,13 @@ function daysLeft(d) {
   const t = new Date(); t.setHours(0,0,0,0);
   return Math.ceil((d - t) / 86400000);
 }
+/* Returns diff in days: positive = completed early, negative = completed late */
+function completionSpeed(completionDate, deadlineDate) {
+  if (!completionDate || !deadlineDate) return null;
+  const cd = new Date(completionDate); cd.setHours(0,0,0,0);
+  const dl = new Date(deadlineDate);   dl.setHours(0,0,0,0);
+  return Math.round((dl - cd) / 86400000);
+}
 function splitEmployees(val) {
   if (!val || !val.trim()) return [];
   return val.split(/\+/).map(e => e.trim()).filter(e => e && e.length > 1);
@@ -205,9 +236,6 @@ function getColor(pct, dl) {
   if (dl !== null && dl <= 5) return '#E07520';
   return pct > 0 ? '#795745' : '#B0A098';
 }
-function taskId(num) {
-  return 'task-' + String(num || '').trim().replace(/\./g, '-');
-}
 function getBadge(pct, dl) {
   if (pct === 100) return '<span class="badge badge-done">مكتملة ✓</span>';
   if (dl !== null && dl < 0) return '<span class="badge badge-late">متأخرة</span>';
@@ -215,6 +243,20 @@ function getBadge(pct, dl) {
   if (dl !== null && dl <= 5) return '<span class="badge badge-warn">خلال ' + dl + ' أيام</span>';
   if (pct > 0) return '<span class="badge badge-prog">قيد التنفيذ</span>';
   return '<span class="badge badge-wait">لم تبدأ</span>';
+}
+function speedBadgeClass(spd) {
+  if (spd === null) return null;
+  if (spd > 0)  return 'spd-early';
+  if (spd < 0)  return 'spd-late';
+  return 'spd-ontime';
+}
+function speedLabel(spd, short) {
+  if (spd === null) return '';
+  const abs = Math.abs(spd);
+  const unit = abs === 1 ? 'يوم' : 'أيام';
+  if (spd > 0) return short ? `⚡ مبكر ${abs} ${unit}` : `⚡ أُنجز قبل الددلاين بـ ${abs} ${unit}`;
+  if (spd < 0) return short ? `⏱ متأخر ${abs} ${unit}` : `⏱ أُنجز بعد الددلاين بـ ${abs} ${unit}`;
+  return '✓ في الوقت تماماً';
 }
 
 /* ── Group tasks ── */
@@ -240,13 +282,32 @@ function calcEmployees(rows) {
     if (!isValidRow(r) || isMain(r)) continue;
     const p = parseProgress(r['الإنجاز %']);
     if (p === null) continue;
+    const pct = Math.round(p);
     for (const e of splitEmployees(r['المسؤول'])) {
-      if (!map[e]) map[e] = { t: 0, c: 0, idx: Object.keys(map).length };
-      map[e].t += p; map[e].c++;
+      if (!map[e]) map[e] = { t:0, c:0, done:0, incomplete:0, speedSum:0, speedCount:0, idx: Object.keys(map).length };
+      map[e].t += p;
+      map[e].c++;
+      if (pct === 100) {
+        map[e].done++;
+        const dl = parseDate(r['الديدلاين']);
+        const cd = parseDate(r['تاريخ الإنجاز']);
+        const spd = completionSpeed(cd, dl);
+        if (spd !== null) { map[e].speedSum += spd; map[e].speedCount++; }
+      } else {
+        map[e].incomplete++;
+      }
     }
   }
   return Object.entries(map)
-    .map(([name, d]) => ({ name, pct: Math.round(d.t / d.c), count: d.c, idx: d.idx }))
+    .map(([name, d]) => ({
+      name,
+      pct:        Math.round(d.t / d.c),
+      count:      d.c,
+      done:       d.done,
+      incomplete: d.incomplete,
+      avgSpeed:   d.speedCount ? Math.round(d.speedSum / d.speedCount) : null,
+      idx:        d.idx
+    }))
     .sort((a, b) => b.pct - a.pct);
 }
 
@@ -274,14 +335,16 @@ function renderSummary(rows) {
     </div>`;
 }
 
-/* ── Render: employee mini-cards (summary row) ── */
+/* ── Render: employee mini-cards ── */
 function renderEmpMini(rows) {
   const list = calcEmployees(rows);
   if (!list.length) return '';
   let html = '<div class="emp-mini-grid">';
-  list.forEach(({ name, pct, count, idx }) => {
+  list.forEach(({ name, pct, done, incomplete, avgSpeed, idx }) => {
     const col = AV_COLORS[idx % AV_COLORS.length];
-    const pc = getColor(pct, null);
+    const pc  = getColor(pct, null);
+    const spdClass = speedBadgeClass(avgSpeed);
+    const spdLbl   = speedLabel(avgSpeed, true);
     html += `
       <div class="emp-mini-card">
         <div class="emp-mini-avatar" style="background:${col};">${initials(name)}</div>
@@ -291,7 +354,11 @@ function renderEmpMini(rows) {
             <div class="prog-bar" style="height:6px;flex:1;"><div class="prog-fill" style="width:${pct}%;background:${pc};height:100%;"></div></div>
             <span class="emp-mini-pct" style="color:${pc};">${pct}%</span>
           </div>
-          <div style="font-size:10px;color:#9a7060;margin-top:3px;">${count} مهمة</div>
+          <div class="emp-mini-meta">
+            <span>${done} مكتملة</span>
+            ${incomplete > 0 ? `<span class="emp-incomplete">· ${incomplete} غير منجزة</span>` : ''}
+          </div>
+          ${spdClass ? `<span class="spd-badge ${spdClass}">${spdLbl}</span>` : ''}
         </div>
       </div>`;
   });
@@ -299,6 +366,11 @@ function renderEmpMini(rows) {
 }
 
 /* ── Render: deadline alerts ── */
+// populated by renderTasks, used by jumpToTask
+let taskIdMap = {};
+let subRowCounter = 0;
+let groupCounter  = 0;
+
 function renderAlerts(rows) {
   const alerts = [];
   for (const r of rows) {
@@ -320,9 +392,11 @@ function renderAlerts(rows) {
       ? `متأخرة بـ ${Math.abs(d)} ${Math.abs(d)===1?'يوم':'أيام'}`
       : d === 0 ? 'ينتهي اليوم!' : `ينتهي خلال ${d} ${d===1?'يوم':'أيام'}`;
     const bs = isOver ? 'background:#CB3917;color:#fff;' : 'background:#E07520;color:#fff;';
-    const tid = taskId(r['#']);
+    /* safe data attribute — no quoting issues */
     html += `
-      <div class="alert-item ${isOver?'alert-over':'alert-warn'}" onclick="scrollToTask('${tid}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')scrollToTask('${tid}')">
+      <div class="alert-item ${isOver?'alert-over':'alert-warn'}"
+           data-taskname="${(r['اسم المهمة']||'').replace(/"/g,'&quot;')}"
+           onclick="jumpToTask(this.dataset.taskname)">
         <div class="alert-info">
           <div class="alert-name">${r['اسم المهمة']}</div>
           <div class="alert-meta">${r['المسؤول']?'المسؤول: '+r['المسؤول']+' &nbsp;•&nbsp; ':''}الإنجاز: ${Math.round(p)}% &nbsp;•&nbsp; الديدلاين: ${r['الديدلاين']}</div>
@@ -334,32 +408,55 @@ function renderAlerts(rows) {
 }
 
 /* ── Render: tasks (collapsible) ── */
-let groupCounter = 0;
 function renderTasks(groups) {
-  groupCounter = 0;
+  groupCounter   = 0;
+  subRowCounter  = 0;
+  taskIdMap      = {};
   let html = '<div class="section-hdr">📋 نسبة الإنجاز للمهام</div>';
   for (const g of groups) {
-    const id = 'grp-' + (groupCounter++);
-    const gPct = groupAvg(g);
-    const gCol = getColor(gPct, null);
+    const id       = 'grp-' + (groupCounter++);
+    const gPct     = groupAvg(g);
+    const gCol     = getColor(gPct, null);
     const mainName = g.main['اسم المهمة'] || '';
-    const mainDl = g.main['الديدلاين'];
+    const mainDl   = g.main['الديدلاين'];
 
-    /* sub-tasks HTML */
     let subsHtml = '';
     for (const s of g.subs) {
-      const p = parseProgress(s['الإنجاز %']);
+      const p   = parseProgress(s['الإنجاز %']);
       const pct = p !== null ? Math.round(p) : 0;
-      const dl = parseDate(s['الديدلاين']);
-      const d = daysLeft(dl);
-      const pc = getColor(pct, d);
+      const dl  = parseDate(s['الديدلاين']);
+      const d   = daysLeft(dl);
+      const pc  = getColor(pct, d);
       const stage = (s['المرحلة الحالية']||'').trim();
       const next  = (s['الخطوة القادمة']||'').trim();
       const upd   = (s['تاريخ آخر تحديث']||'').trim();
-      const dlTxt = s['الديدلاين'] ? s['الديدلاين'] : '';
+      const dlTxt = s['الديدلاين'] || '';
       const hasDetails = stage || next || upd;
+
+      /* assign numeric ID for jumpToTask */
+      const rowId = 'subr-' + (subRowCounter++);
+      taskIdMap[s['اسم المهمة']||''] = { rowId, groupId: id };
+
+      /* ── Completion date strip (shown only when pct=100) ── */
+      let completionStrip = '';
+      if (pct === 100) {
+        const cdRaw = (s['تاريخ الإنجاز'] || '').trim();
+        const cd    = parseDate(cdRaw);
+        const spd   = completionSpeed(cd, dl);
+        const spdBadge = spd !== null
+          ? `<span class="task-speed-badge ${spd>0?'task-speed-early':spd<0?'task-speed-late':'task-speed-ontime'}">${speedLabel(spd,false)}</span>`
+          : '';
+        const dateBlock = cdRaw
+          ? `<div class="completion-date-box">
+               <span class="completion-date-lbl">📅 تاريخ الإنجاز:</span>
+               <span class="completion-date-val">${cdRaw}</span>
+             </div>`
+          : `<div class="completion-date-missing">⚠ تاريخ الإنجاز مطلوب — يرجى إدخاله في الجدول</div>`;
+        completionStrip = `<div class="completion-strip">${dateBlock}${spdBadge}</div>`;
+      }
+
       subsHtml += `
-        <div class="sub-row" id="${taskId(s['#'])}">
+        <div class="sub-row" id="${rowId}">
           <div class="sub-info">
             <div class="sub-name" title="${s['اسم المهمة']||''}">${s['اسم المهمة']||''}</div>
             ${dlTxt ? `<div class="sub-meta">📅 الديدلاين: ${dlTxt}</div>` : ''}
@@ -373,6 +470,7 @@ function renderTasks(groups) {
             ${s['المسؤول'] ? '<div class="sub-owner">'+s['المسؤول']+'</div>' : ''}
           </div>
         </div>
+        ${completionStrip}
         ${hasDetails ? `
         <div class="sub-details">
           <div class="sub-detail-box">
@@ -419,9 +517,11 @@ function renderEmployees(rows) {
   const list = calcEmployees(rows);
   if (!list.length) return '';
   let html = '<div class="section-hdr">👤 تفاصيل إنجاز الموظفين</div>';
-  list.forEach(({ name, pct, count, idx }) => {
+  list.forEach(({ name, pct, count, done, incomplete, avgSpeed, idx }) => {
     const col = AV_COLORS[idx % AV_COLORS.length];
-    const pc = getColor(pct, null);
+    const pc  = getColor(pct, null);
+    const spdClass = speedBadgeClass(avgSpeed);
+    const spdLbl   = speedLabel(avgSpeed, false);
     html += `
       <div class="emp-row">
         <div class="emp-avatar" style="background:${col};">${initials(name)}</div>
@@ -431,30 +531,20 @@ function renderEmployees(rows) {
             <div class="prog-bar" style="height:8px;"><div class="prog-fill" style="width:${pct}%;background:${pc};height:100%;"></div></div>
             <span class="prog-pct" style="color:${pc};font-size:13px;">${pct}%</span>
           </div>
+          ${spdClass ? `<span class="spd-badge ${spdClass}" style="margin-top:6px;">${spdLbl}</span>` : ''}
         </div>
-        <div class="emp-count">${count} مهمة</div>
+        <div style="text-align:center;min-width:80px;">
+          <div style="font-size:12px;color:#2E7D32;font-weight:700;">${done} مكتملة</div>
+          ${incomplete > 0 ? `<div style="font-size:11px;color:#CB3917;font-weight:600;margin-top:3px;">${incomplete} غير منجزة</div>` : ''}
+        </div>
       </div>`;
   });
   return html;
 }
 
-/* ── Scroll to task from alert ── */
-function scrollToTask(id) {
-  const row = document.getElementById(id);
-  if (!row) return;
-  const subsWrap = row.closest('.subs-wrap');
-  const wasCollapsed = subsWrap && subsWrap.style.maxHeight === '0px';
-  if (wasCollapsed) toggleGroup(subsWrap.id);
-  setTimeout(() => {
-    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    row.classList.add('task-highlight');
-    setTimeout(() => row.classList.remove('task-highlight'), 2200);
-  }, wasCollapsed ? 320 : 50);
-}
-
 /* ── Toggle collapse ── */
 function toggleGroup(id) {
-  const el = document.getElementById(id);
+  const el   = document.getElementById(id);
   const chev = document.getElementById('chev-' + id);
   if (!el) return;
   if (el.style.maxHeight === '0px') {
@@ -466,6 +556,29 @@ function toggleGroup(id) {
   }
 }
 
+/* ── Jump to task from alert ── */
+function jumpToTask(name) {
+  const info = taskIdMap[name];
+  if (!info) return;
+
+  /* open group if collapsed */
+  const subsWrap = document.getElementById(info.groupId);
+  if (subsWrap && subsWrap.style.maxHeight === '0px') {
+    toggleGroup(info.groupId);
+  }
+
+  /* scroll + highlight after expand animation */
+  setTimeout(() => {
+    const subRow = document.getElementById(info.rowId);
+    if (!subRow) return;
+    subRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    subRow.classList.remove('sub-row-highlight');
+    void subRow.offsetWidth;
+    subRow.classList.add('sub-row-highlight');
+    setTimeout(() => subRow.classList.remove('sub-row-highlight'), 2200);
+  }, 320);
+}
+
 /* ── Load data ── */
 async function loadData() {
   const cont = document.getElementById('main-content');
@@ -473,10 +586,10 @@ async function loadData() {
   try {
     const resp = await fetch(CSV_URL + '&t=' + Date.now());
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const text = await resp.text();
-    const rows = parseCSV(text);
+    const text   = await resp.text();
+    const rows   = parseCSV(text);
     const groups = groupTasks(rows);
-    const now = new Date();
+    const now    = new Date();
     document.getElementById('update-time').textContent =
       'آخر تحديث: ' + now.toLocaleDateString('ar-SA') + ' ' +
       String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
