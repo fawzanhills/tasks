@@ -173,7 +173,7 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
       <div class="hdr-name">فوزان هيلز</div>
       <div class="hdr-en">FAWZAN HILLS</div>
       <div class="hdr-sub">لوحة تتبع المهام</div>
-      <div style="font-size:10px;opacity:.55;margin-top:4px;letter-spacing:.5px;">✦ نسخة محدثة 14-09-2026 — v1</div>
+      <div style="font-size:10px;opacity:.55;margin-top:4px;letter-spacing:.5px;">✦ نسخة محدثة 14-09-2026 — v2</div>
     </div>
     <div class="hdr-right">
       <div class="hdr-time" id="update-time"></div>
@@ -379,7 +379,7 @@ function renderEmpMini(rows) {
     const spdClass = speedBadgeClass(avgSpeed);
     const spdLbl   = speedLabel(avgSpeed, true);
     html += `
-      <div class="emp-mini-card" onclick="showEmployeeTasks(this.dataset.n,this.dataset.c)" data-n="${name}" data-c="${col}" title="اضغط لعرض مهام ${name}">
+      <div class="emp-mini-card" data-n="${name}" data-c="${col}" title="اضغط لعرض مهام ${name}">
         <div class="emp-mini-avatar" style="background:${col};">${initials(name)}</div>
         <div class="emp-mini-info">
           <div class="emp-mini-name" title="${name}">${name}</div>
@@ -556,7 +556,7 @@ function renderEmployees(rows) {
     const spdClass = speedBadgeClass(avgSpeed);
     const spdLbl   = speedLabel(avgSpeed, false);
     html += `
-      <div class="emp-row" onclick="showEmployeeTasks(this.dataset.n,this.dataset.c)" data-n="${name}" data-c="${col}" title="اضغط لعرض مهام ${name}">
+      <div class="emp-row" data-n="${name}" data-c="${col}" title="اضغط لعرض مهام ${name}">
         <div class="emp-avatar" style="background:${col};">${initials(name)}</div>
         <div class="emp-info">
           <div class="emp-name">${name}</div>
@@ -739,7 +739,7 @@ function showEmployeeTasks(empName, col) {
 
     compHtml +=
       '<div class="emp-mtask">'+
-        '<div class="emp-mtask-hdr clickable" onclick="toggleEmpTask(\''+cid+'\')">'+
+        '<div class="emp-mtask-hdr clickable" data-cid="'+cid+'">'+
           '<div class="emp-mtask-nm">'+
             '<div class="emp-mtask-title">'+(r['اسم المهمة']||'')+'</div>'+
             (parent ? '<div class="emp-mtask-parent">◂ '+parent+'</div>' : '')+
@@ -781,24 +781,59 @@ function showEmployeeTasks(empName, col) {
   document.getElementById('emp-modal').classList.add('active');
 }
 
-function toggleEmpTask(id) {
-  var body = document.getElementById(id);
-  var tog  = document.getElementById('tog-'+id);
-  if (!body) return;
-  var isOpen = body.style.display !== 'none';
-  body.style.display = isOpen ? 'none' : 'block';
-  if (tog) tog.classList.toggle('open', !isOpen);
-}
+/* toggleEmpTask handled by event delegation above */
 
-function closeEmpModal(e) {
-  if (e && e.target !== document.getElementById('emp-modal')) return;
+function closeEmpModal() {
   document.getElementById('emp-modal').classList.remove('active');
 }
+
+/* ── Central event delegation (no onclick in HTML needed) ── */
+document.addEventListener('DOMContentLoaded', function() {
+
+  /* Employee cards & rows → open modal */
+  document.addEventListener('click', function(e) {
+    var card = e.target.closest('.emp-mini-card[data-n], .emp-row[data-n]');
+    if (card) {
+      showEmployeeTasks(card.getAttribute('data-n'), card.getAttribute('data-c'));
+      return;
+    }
+    /* Close modal when clicking overlay background */
+    if (e.target && e.target.id === 'emp-modal') {
+      closeEmpModal();
+      return;
+    }
+    /* Close button */
+    if (e.target && e.target.id === 'emp-modal-close') {
+      closeEmpModal();
+      return;
+    }
+    /* Collapsed complete-task toggle */
+    var tog = e.target.closest('.emp-mtask-hdr.clickable');
+    if (tog) {
+      var cid = tog.getAttribute('data-cid');
+      if (cid) {
+        var body = document.getElementById(cid);
+        var arrow = document.getElementById('tog-'+cid);
+        if (body) {
+          var open = body.style.display !== 'none';
+          body.style.display = open ? 'none' : 'block';
+          if (arrow) arrow.classList.toggle('open', !open);
+        }
+      }
+    }
+  });
+
+  /* Close modal on Escape key */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeEmpModal();
+  });
+
+});
 
 loadData();
 </script>
 <!-- Employee Tasks Modal -->
-<div id="emp-modal" class="emp-modal-overlay" onclick="closeEmpModal(event)">
+<div id="emp-modal" class="emp-modal-overlay">
   <div class="emp-modal-box">
     <div class="emp-modal-hdr">
       <div class="emp-modal-av" id="emp-modal-av"></div>
@@ -806,7 +841,7 @@ loadData();
         <div class="emp-modal-ttl" id="emp-modal-ttl"></div>
         <div class="emp-modal-sub" id="emp-modal-sub"></div>
       </div>
-      <button class="emp-modal-close" onclick="document.getElementById('emp-modal').classList.remove('active')">✕</button>
+      <button class="emp-modal-close" id="emp-modal-close">✕</button>
     </div>
     <div class="emp-modal-body" id="emp-modal-body"></div>
   </div>
