@@ -108,12 +108,33 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
 .task-speed-ontime{background:#E3F2FD;color:#1565C0;}
 
 /* ── Employee section (bottom) ── */
-.emp-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;background:#fff;border:0.5px solid #DBC8BA;border-radius:10px;padding:12px 16px;}
+.emp-block{background:#fff;border:0.5px solid #DBC8BA;border-radius:10px;margin-bottom:12px;overflow:hidden;}
+.emp-row{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;user-select:none;transition:background .15s;}
+.emp-row:hover{background:#fdf7f3;}
 .emp-avatar{width:38px;height:38px;border-radius:50%;background:#795745;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;flex-shrink:0;}
 .emp-info{flex:1;}
 .emp-name{font-size:13px;font-weight:600;color:#2C1F15;margin-bottom:5px;}
 .emp-bar-row{display:flex;align-items:center;gap:8px;}
 .emp-count{font-size:11px;color:#9a7060;white-space:nowrap;min-width:50px;text-align:left;}
+.emp-chevron{font-size:14px;color:#795745;transition:transform .25s;margin-left:4px;}
+.emp-chevron.open{transform:rotate(180deg);}
+.emp-tasks-panel{max-height:0;overflow:hidden;transition:max-height .3s ease;border-top:0.5px solid #EDE0D4;}
+.emp-tasks-panel.open{max-height:9999px;border-top:1px solid #DBC8BA;}
+.emp-tasks-inner{padding:10px 14px 14px;}
+.ept-sec-lbl{font-size:12px;font-weight:700;color:#795745;margin:0 0 8px;padding-bottom:5px;border-bottom:1px solid #EDE0D4;}
+.ept-sec-lbl.done-lbl{margin-top:14px;color:#2E7D32;}
+.ept-task{background:#fdf9f6;border:0.5px solid #EDE0D4;border-radius:8px;margin-bottom:7px;overflow:hidden;}
+.ept-task-hdr{padding:9px 12px;display:flex;align-items:center;gap:8px;}
+.ept-task-name{flex:1;font-size:12px;font-weight:600;color:#2C1F15;}
+.ept-task-parent{font-size:10px;color:#9a7060;margin-top:2px;}
+.ept-done-hdr{cursor:pointer;}
+.ept-done-hdr:hover{background:#f5efe9;}
+.ept-tog{font-size:12px;color:#795745;transition:transform .2s;}
+.ept-tog.open{transform:rotate(180deg);}
+.ept-task-body{padding:8px 12px 10px;border-top:0.5px solid #EDE0D4;display:none;}
+.ept-task-body.open{display:block;}
+.ept-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px;}
+@media(max-width:600px){.ept-detail-grid{grid-template-columns:1fr;}}
 
 /* ── Highlight animation (for jumpToTask) ── */
 @keyframes rowPulse{0%{background:#FFF9C4;}65%{background:#FFF9C4;}100%{background:transparent;}}
@@ -131,38 +152,6 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
   .emp-mini-grid{grid-template-columns:repeat(2,1fr);}
   .completion-strip{flex-direction:column;align-items:flex-start;}
 }
-
-/* ── Employee Modal ── */
-.emp-modal-overlay{position:fixed;inset:0;background:rgba(44,31,21,.55);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s;}
-.emp-modal-overlay.active{opacity:1;pointer-events:all;}
-.emp-modal-box{background:#FEFAF1;border-radius:16px;width:min(700px,96vw);max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 10px 48px rgba(44,31,21,.28);transform:translateY(14px);transition:transform .25s;}
-.emp-modal-overlay.active .emp-modal-box{transform:translateY(0);}
-.emp-modal-hdr{background:#795745;color:#fff;padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.emp-modal-av{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
-.emp-modal-tw{flex:1;}
-.emp-modal-ttl{font-size:16px;font-weight:700;}
-.emp-modal-sub{font-size:12px;opacity:.75;margin-top:2px;}
-.emp-modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0;line-height:1;}
-.emp-modal-close:hover{background:rgba(255,255,255,.3);}
-.emp-modal-body{overflow-y:auto;padding:1rem 1.1rem;}
-.emp-msec-hdr{font-size:13px;font-weight:700;color:#795745;margin:0 0 .65rem;padding-bottom:6px;border-bottom:1.5px solid #DBC8BA;display:flex;align-items:center;gap:6px;}
-.emp-msec-hdr.done-sec{margin-top:1.2rem;}
-.emp-mtask{background:#fff;border:0.5px solid #DBC8BA;border-radius:10px;margin-bottom:8px;overflow:hidden;}
-.emp-mtask-hdr{padding:10px 14px;display:flex;align-items:center;gap:10px;}
-.emp-mtask-hdr.clickable{cursor:pointer;}
-.emp-mtask-hdr.clickable:hover{background:#fdf7f3;}
-.emp-mtask-nm{flex:1;}
-.emp-mtask-title{font-size:13px;font-weight:600;color:#2C1F15;}
-.emp-mtask-parent{font-size:11px;color:#9a7060;margin-top:2px;}
-.emp-mtask-body{padding:10px 14px 12px;border-top:0.5px solid #f0e6de;}
-.emp-mtask-dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
-.emp-tog{font-size:13px;color:#795745;transition:transform .22s;flex-shrink:0;}
-.emp-tog.open{transform:rotate(180deg);}
-.emp-mini-card{cursor:pointer;transition:box-shadow .2s,transform .15s;}
-.emp-mini-card:hover{box-shadow:0 3px 14px rgba(121,87,69,.2);transform:translateY(-1px);}
-.emp-row{cursor:pointer;transition:box-shadow .2s,transform .15s;}
-.emp-row:hover{box-shadow:0 3px 14px rgba(121,87,69,.2);transform:translateY(-1px);}
-@media(max-width:600px){.emp-mtask-dgrid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -173,7 +162,7 @@ body{direction:rtl;font-family:'Segoe UI',Tahoma,'Geeza Pro',Arial,sans-serif;ba
       <div class="hdr-name">فوزان هيلز</div>
       <div class="hdr-en">FAWZAN HILLS</div>
       <div class="hdr-sub">لوحة تتبع المهام</div>
-      <div style="font-size:10px;opacity:.55;margin-top:4px;letter-spacing:.5px;">✦ نسخة محدثة 14-09-2026 — v2</div>
+      <div style="font-size:10px;opacity:.55;margin-top:4px;letter-spacing:.5px;">✦ نسخة محدثة 14-09-2026 — v3</div>
     </div>
     <div class="hdr-right">
       <div class="hdr-time" id="update-time"></div>
@@ -379,7 +368,7 @@ function renderEmpMini(rows) {
     const spdClass = speedBadgeClass(avgSpeed);
     const spdLbl   = speedLabel(avgSpeed, true);
     html += `
-      <div class="emp-mini-card" data-n="${name}" data-c="${col}" title="اضغط لعرض مهام ${name}">
+      <div class="emp-mini-card">
         <div class="emp-mini-avatar" style="background:${col};">${initials(name)}</div>
         <div class="emp-mini-info">
           <div class="emp-mini-name" title="${name}">${name}</div>
@@ -546,31 +535,162 @@ function renderTasks(groups) {
 }
 
 /* ── Render: employee detail section ── */
+let empCounter = 0;
 function renderEmployees(rows) {
   const list = calcEmployees(rows);
   if (!list.length) return '';
+  empCounter = 0;
+
+  /* build parent map */
+  const parentMap = {};
+  const grps = groupTasks(rows);
+  for (const g of grps) {
+    for (const s of g.subs) {
+      parentMap[(s['اسم المهمة']||'').trim()] = (g.main['اسم المهمة']||'').trim();
+    }
+  }
+
   let html = '<div class="section-hdr">👤 تفاصيل إنجاز الموظفين</div>';
-  list.forEach(({ name, pct, count, done, incomplete, avgSpeed, idx }) => {
+  list.forEach(function(emp) {
+    const name = emp.name, pct = emp.pct, done = emp.done, incomplete = emp.incomplete;
+    const avgSpeed = emp.avgSpeed, idx = emp.idx;
     const col = AV_COLORS[idx % AV_COLORS.length];
     const pc  = getColor(pct, null);
     const spdClass = speedBadgeClass(avgSpeed);
     const spdLbl   = speedLabel(avgSpeed, false);
-    html += `
-      <div class="emp-row" data-n="${name}" data-c="${col}" title="اضغط لعرض مهام ${name}">
-        <div class="emp-avatar" style="background:${col};">${initials(name)}</div>
-        <div class="emp-info">
-          <div class="emp-name">${name}</div>
-          <div class="emp-bar-row">
-            <div class="prog-bar" style="height:8px;"><div class="prog-fill" style="width:${pct}%;background:${pc};height:100%;"></div></div>
-            <span class="prog-pct" style="color:${pc};font-size:13px;">${pct}%</span>
-          </div>
-          ${spdClass ? `<span class="spd-badge ${spdClass}" style="margin-top:6px;">${spdLbl}</span>` : ''}
-        </div>
-        <div style="text-align:center;min-width:80px;">
-          <div style="font-size:12px;color:#2E7D32;font-weight:700;">${done} مكتملة</div>
-          ${incomplete > 0 ? `<div style="font-size:11px;color:#CB3917;font-weight:600;margin-top:3px;">${incomplete} غير منجزة</div>` : ''}
-        </div>
-      </div>`;
+    const eid = 'emp-panel-' + (empCounter++);
+
+    /* ── find this employee's tasks ── */
+    const empTasks = [];
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+      if (!isValidRow(r) || isMain(r)) continue;
+      if (splitEmployees(r['المسؤول']).indexOf(name) !== -1) empTasks.push(r);
+    }
+    const incTasks = [];
+    const doneTasks = [];
+    for (let i = 0; i < empTasks.length; i++) {
+      const p = parseProgress(empTasks[i]['الإنجاز %']);
+      if (p !== null && Math.round(p) === 100) doneTasks.push(empTasks[i]);
+      else incTasks.push(empTasks[i]);
+    }
+
+    /* ── build incomplete tasks HTML ── */
+    let incHtml = '';
+    for (let i = 0; i < incTasks.length; i++) {
+      const r = incTasks[i];
+      const p2 = parseProgress(r['الإنجاز %']) || 0;
+      const pct2 = Math.round(p2);
+      const dl2 = parseDate(r['الديدلاين']);
+      const d2 = daysLeft(dl2);
+      const pc2 = getColor(pct2, d2);
+      const stage2 = (r['المرحلة الحالية']||'').trim();
+      const next2 = (r['الخطوة القادمة']||'').trim();
+      const upd2 = (r['تاريخ آخر تحديث']||'').trim();
+      const dlTxt2 = r['الديدلاين']||'';
+      const parent2 = parentMap[(r['اسم المهمة']||'').trim()]||'';
+      let detHtml = '';
+      if (stage2 || next2 || upd2) {
+        detHtml = '<div class="ept-detail-grid">';
+        if (stage2) detHtml += '<div class="sub-detail-box"><div class="sub-detail-lbl">◈ المرحلة الحالية</div><div class="sub-detail-val">'+stage2+'</div></div>';
+        if (next2)  detHtml += '<div class="sub-detail-box"><div class="sub-detail-lbl">◉ الخطوة القادمة</div><div class="sub-detail-val">'+next2+'</div></div>';
+        if (upd2)   detHtml += '<div class="sub-detail-box"><div class="sub-detail-lbl">◷ آخر تحديث</div><div class="sub-detail-val">'+upd2+'</div></div>';
+        detHtml += '</div>';
+      }
+      incHtml +=
+        '<div class="ept-task">'+
+          '<div class="ept-task-hdr">'+
+            '<div style="flex:1;">'+
+              '<div class="ept-task-name">'+(r['اسم المهمة']||'')+'</div>'+
+              (parent2 ? '<div class="ept-task-parent">◂ '+parent2+'</div>' : '')+
+            '</div>'+
+            getBadge(pct2, d2)+
+          '</div>'+
+          '<div class="ept-task-body open">'+
+            (dlTxt2 ? '<div style="font-size:11px;color:#9a7060;margin-bottom:6px;">📅 الديدلاين: '+dlTxt2+'</div>' : '')+
+            '<div style="display:flex;align-items:center;gap:8px;">'+
+              '<div class="prog-bar" style="height:7px;flex:1;"><div class="prog-fill" style="width:'+pct2+'%;background:'+pc2+';height:100%;"></div></div>'+
+              '<span class="prog-pct" style="color:'+pc2+';">'+pct2+'%</span>'+
+            '</div>'+
+            detHtml+
+          '</div>'+
+        '</div>';
+    }
+
+    /* ── build complete tasks HTML (collapsed) ── */
+    let doneHtml = '';
+    for (let i = 0; i < doneTasks.length; i++) {
+      const r = doneTasks[i];
+      const cdRaw = (r['تاريخ الإنجاز']||'').trim();
+      const dl2 = parseDate(r['الديدلاين']);
+      const cd2 = parseDate(cdRaw);
+      const spd2 = completionSpeed(cd2, dl2);
+      const parent2 = parentMap[(r['اسم المهمة']||'').trim()]||'';
+      const dtid = eid + '-dt-' + i;
+      let spdBadge2 = '';
+      if (spd2 !== null) {
+        const sc2 = spd2 > 0 ? 'task-speed-early' : (spd2 < 0 ? 'task-speed-late' : 'task-speed-ontime');
+        spdBadge2 = '<span class="task-speed-badge '+sc2+'">'+speedLabel(spd2,false)+'</span>';
+      }
+      let bodyC = cdRaw
+        ? ('<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'+
+            '<span class="completion-date-lbl">📅 تاريخ الإنجاز:</span>'+
+            '<span class="completion-date-val">'+cdRaw+'</span>'+
+            spdBadge2+
+          '</div>')
+        : '<div class="completion-date-missing">⚠ تاريخ الإنجاز غير مدخل</div>';
+      if (r['الديدلاين']) bodyC += '<div style="font-size:11px;color:#9a7060;margin-top:5px;">📅 الديدلاين: '+r['الديدلاين']+'</div>';
+
+      doneHtml +=
+        '<div class="ept-task">'+
+          '<div class="ept-task-hdr ept-done-hdr" onclick="toggleDoneTask(\''+dtid+'\')">'+
+            '<div style="flex:1;">'+
+              '<div class="ept-task-name">'+(r['اسم المهمة']||'')+'</div>'+
+              (parent2 ? '<div class="ept-task-parent">◂ '+parent2+'</div>' : '')+
+            '</div>'+
+            '<span class="badge badge-done">مكتملة ✓</span>'+
+            '<span class="ept-tog" id="tog-'+dtid+'">▾</span>'+
+          '</div>'+
+          '<div class="ept-task-body" id="'+dtid+'">'+
+            bodyC+
+          '</div>'+
+        '</div>';
+    }
+
+    /* ── build task panel ── */
+    let panelHtml = '<div class="emp-tasks-inner">';
+    if (incTasks.length) {
+      panelHtml += '<div class="ept-sec-lbl">⏳ غير مكتملة ('+incTasks.length+')</div>' + incHtml;
+    } else if (empTasks.length) {
+      panelHtml += '<div style="text-align:center;padding:.6rem;color:#2E7D32;font-size:12px;font-weight:600;">✅ جميع المهام مكتملة</div>';
+    }
+    if (doneTasks.length) {
+      panelHtml += '<div class="ept-sec-lbl done-lbl">✅ مكتملة ('+doneTasks.length+')</div>' + doneHtml;
+    }
+    panelHtml += '</div>';
+
+    html +=
+      '<div class="emp-block">'+
+        '<div class="emp-row" onclick="toggleEmpPanel(\''+eid+'\')">'+
+          '<div class="emp-avatar" style="background:'+col+';">'+initials(name)+'</div>'+
+          '<div class="emp-info">'+
+            '<div class="emp-name">'+name+'</div>'+
+            '<div class="emp-bar-row">'+
+              '<div class="prog-bar" style="height:8px;"><div class="prog-fill" style="width:'+pct+'%;background:'+pc+';height:100%;"></div></div>'+
+              '<span class="prog-pct" style="color:'+pc+';font-size:13px;">'+pct+'%</span>'+
+            '</div>'+
+            (spdClass ? '<span class="spd-badge '+spdClass+'" style="margin-top:6px;">'+spdLbl+'</span>' : '')+
+          '</div>'+
+          '<div style="text-align:center;min-width:80px;">'+
+            '<div style="font-size:12px;color:#2E7D32;font-weight:700;">'+done+' مكتملة</div>'+
+            (incomplete > 0 ? '<div style="font-size:11px;color:#CB3917;font-weight:600;margin-top:3px;">'+incomplete+' غير منجزة</div>' : '')+
+          '</div>'+
+          '<span class="emp-chevron" id="chev-'+eid+'">▾</span>'+
+        '</div>'+
+        '<div class="emp-tasks-panel" id="'+eid+'">'+
+          panelHtml+
+        '</div>'+
+      '</div>';
   });
   return html;
 }
@@ -612,6 +732,24 @@ function jumpToTask(name) {
   }, 320);
 }
 
+/* ── Toggle employee panel ── */
+function toggleEmpPanel(id) {
+  var panel = document.getElementById(id);
+  var chev  = document.getElementById('chev-' + id);
+  if (!panel) return;
+  panel.classList.toggle('open');
+  if (chev) chev.classList.toggle('open');
+}
+
+/* ── Toggle done-task detail ── */
+function toggleDoneTask(id) {
+  var body = document.getElementById(id);
+  var tog  = document.getElementById('tog-' + id);
+  if (!body) return;
+  body.classList.toggle('open');
+  if (tog) tog.classList.toggle('open');
+}
+
 /* ── Load data ── */
 async function loadData() {
   const cont = document.getElementById('main-content');
@@ -646,205 +784,7 @@ async function loadData() {
   }
 }
 
-/* ── Employee Tasks Modal ── */
-function showEmployeeTasks(empName, col) {
-  /* build parent map */
-  var parentMap = {};
-  var grps = groupTasks(allRows);
-  for (var gi = 0; gi < grps.length; gi++) {
-    for (var si = 0; si < grps[gi].subs.length; si++) {
-      var s = grps[gi].subs[si];
-      parentMap[(s['اسم المهمة']||'').trim()] = (grps[gi].main['اسم المهمة']||'').trim();
-    }
-  }
-
-  /* filter rows for this employee */
-  var empRows = [];
-  for (var ri = 0; ri < allRows.length; ri++) {
-    var rx = allRows[ri];
-    if (!isValidRow(rx) || isMain(rx)) continue;
-    if (splitEmployees(rx['المسؤول']).indexOf(empName) !== -1) empRows.push(rx);
-  }
-  var incomplete = empRows.filter(function(r){ var p=parseProgress(r['الإنجاز %']); return p===null||Math.round(p)<100; });
-  var complete   = empRows.filter(function(r){ var p=parseProgress(r['الإنجاز %']); return p!==null&&Math.round(p)===100; });
-
-  /* ── Incomplete tasks — expanded ── */
-  var incHtml = '';
-  for (var ii = 0; ii < incomplete.length; ii++) {
-    var r   = incomplete[ii];
-    var p   = parseProgress(r['الإنجاز %']) || 0;
-    var pct = Math.round(p);
-    var dl  = parseDate(r['الديدلاين']);
-    var d   = daysLeft(dl);
-    var pc  = getColor(pct, d);
-    var stage  = (r['المرحلة الحالية']||'').trim();
-    var nxt    = (r['الخطوة القادمة']||'').trim();
-    var upd    = (r['تاريخ آخر تحديث']||'').trim();
-    var dlTxt  = r['الديدلاين']||'';
-    var parent = parentMap[(r['اسم المهمة']||'').trim()]||'';
-
-    var detHtml = '';
-    if (stage || nxt || upd) {
-      detHtml += '<div class="emp-mtask-dgrid">';
-      if (stage) detHtml += '<div class="sub-detail-box"><div class="sub-detail-lbl">◈ المرحلة الحالية</div><div class="sub-detail-val">'+stage+'</div></div>';
-      if (nxt)   detHtml += '<div class="sub-detail-box"><div class="sub-detail-lbl">◉ الخطوة القادمة</div><div class="sub-detail-val">'+nxt+'</div></div>';
-      if (upd)   detHtml += '<div class="sub-detail-box"><div class="sub-detail-lbl">◷ آخر تحديث</div><div class="sub-detail-val">'+upd+'</div></div>';
-      detHtml += '</div>';
-    }
-
-    incHtml +=
-      '<div class="emp-mtask">'+
-        '<div class="emp-mtask-hdr">'+
-          '<div class="emp-mtask-nm">'+
-            '<div class="emp-mtask-title">'+(r['اسم المهمة']||'')+'</div>'+
-            (parent ? '<div class="emp-mtask-parent">◂ '+parent+'</div>' : '')+
-          '</div>'+
-          getBadge(pct,d)+
-        '</div>'+
-        '<div class="emp-mtask-body">'+
-          (dlTxt ? '<div style="font-size:11px;color:#9a7060;margin-bottom:7px;">📅 الديدلاين: '+dlTxt+'</div>' : '')+
-          '<div style="display:flex;align-items:center;gap:8px;">'+
-            '<div class="prog-bar" style="height:8px;flex:1;"><div class="prog-fill" style="width:'+pct+'%;background:'+pc+';height:100%;"></div></div>'+
-            '<span class="prog-pct" style="color:'+pc+';">'+pct+'%</span>'+
-          '</div>'+
-          detHtml+
-        '</div>'+
-      '</div>';
-  }
-
-  /* ── Complete tasks — collapsed, click to expand ── */
-  var compHtml = '';
-  for (var ci = 0; ci < complete.length; ci++) {
-    var r      = complete[ci];
-    var cdRaw  = (r['تاريخ الإنجاز']||'').trim();
-    var dl     = parseDate(r['الديدلاين']);
-    var cd     = parseDate(cdRaw);
-    var spd    = completionSpeed(cd, dl);
-    var parent = parentMap[(r['اسم المهمة']||'').trim()]||'';
-    var cid    = 'emc-'+ci;
-
-    var spdBadge = '';
-    if (spd !== null) {
-      var sc = spd>0 ? 'task-speed-early' : (spd<0 ? 'task-speed-late' : 'task-speed-ontime');
-      spdBadge = '<span class="task-speed-badge '+sc+'">'+speedLabel(spd,false)+'</span>';
-    }
-    var bodyContent = cdRaw
-      ? ('<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'+
-           '<span class="completion-date-lbl">📅 تاريخ الإنجاز:</span>'+
-           '<span class="completion-date-val">'+cdRaw+'</span>'+
-           spdBadge+
-         '</div>')
-      : '<div class="completion-date-missing">⚠ تاريخ الإنجاز غير مدخل</div>';
-    if (r['الديدلاين']) bodyContent += '<div style="font-size:11px;color:#9a7060;margin-top:6px;">📅 الديدلاين: '+r['الديدلاين']+'</div>';
-
-    compHtml +=
-      '<div class="emp-mtask">'+
-        '<div class="emp-mtask-hdr clickable" data-cid="'+cid+'">'+
-          '<div class="emp-mtask-nm">'+
-            '<div class="emp-mtask-title">'+(r['اسم المهمة']||'')+'</div>'+
-            (parent ? '<div class="emp-mtask-parent">◂ '+parent+'</div>' : '')+
-          '</div>'+
-          '<span class="badge badge-done">مكتملة ✓</span>'+
-          '<span class="emp-tog" id="tog-'+cid+'">▾</span>'+
-        '</div>'+
-        '<div class="emp-mtask-body" id="'+cid+'" style="display:none;">'+
-          bodyContent+
-        '</div>'+
-      '</div>';
-  }
-
-  /* ── Fill modal ── */
-  var av = document.getElementById('emp-modal-av');
-  av.textContent = initials(empName);
-  av.style.background = col || '#795745';
-  document.getElementById('emp-modal-ttl').textContent = empName;
-  var subTxt = '';
-  if (incomplete.length) subTxt += incomplete.length+' غير مكتملة';
-  if (incomplete.length && complete.length) subTxt += ' • ';
-  if (complete.length)   subTxt += complete.length+' مكتملة';
-  document.getElementById('emp-modal-sub').textContent = subTxt || 'لا توجد مهام';
-
-  var bodyHtml = '';
-  if (incomplete.length) {
-    bodyHtml += '<div class="emp-msec-hdr">⏳ المهام غير المكتملة ('+incomplete.length+')</div>'+incHtml;
-  } else if (empRows.length) {
-    bodyHtml += '<div style="text-align:center;padding:1rem;color:#2E7D32;font-size:13px;font-weight:600;">✅ جميع مهام هذا الموظف مكتملة!</div>';
-  }
-  if (complete.length) {
-    bodyHtml += '<div class="emp-msec-hdr done-sec">✅ المهام المكتملة ('+complete.length+')</div>'+compHtml;
-  }
-  if (!empRows.length) {
-    bodyHtml = '<div style="text-align:center;color:#9a7060;padding:2.5rem 1rem;">لا توجد مهام مسندة لهذا الموظف</div>';
-  }
-
-  document.getElementById('emp-modal-body').innerHTML = bodyHtml;
-  document.getElementById('emp-modal').classList.add('active');
-}
-
-/* toggleEmpTask handled by event delegation above */
-
-function closeEmpModal() {
-  document.getElementById('emp-modal').classList.remove('active');
-}
-
-/* ── Central event delegation (no onclick in HTML needed) ── */
-document.addEventListener('DOMContentLoaded', function() {
-
-  /* Employee cards & rows → open modal */
-  document.addEventListener('click', function(e) {
-    var card = e.target.closest('.emp-mini-card[data-n], .emp-row[data-n]');
-    if (card) {
-      showEmployeeTasks(card.getAttribute('data-n'), card.getAttribute('data-c'));
-      return;
-    }
-    /* Close modal when clicking overlay background */
-    if (e.target && e.target.id === 'emp-modal') {
-      closeEmpModal();
-      return;
-    }
-    /* Close button */
-    if (e.target && e.target.id === 'emp-modal-close') {
-      closeEmpModal();
-      return;
-    }
-    /* Collapsed complete-task toggle */
-    var tog = e.target.closest('.emp-mtask-hdr.clickable');
-    if (tog) {
-      var cid = tog.getAttribute('data-cid');
-      if (cid) {
-        var body = document.getElementById(cid);
-        var arrow = document.getElementById('tog-'+cid);
-        if (body) {
-          var open = body.style.display !== 'none';
-          body.style.display = open ? 'none' : 'block';
-          if (arrow) arrow.classList.toggle('open', !open);
-        }
-      }
-    }
-  });
-
-  /* Close modal on Escape key */
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeEmpModal();
-  });
-
-});
-
 loadData();
 </script>
-<!-- Employee Tasks Modal -->
-<div id="emp-modal" class="emp-modal-overlay">
-  <div class="emp-modal-box">
-    <div class="emp-modal-hdr">
-      <div class="emp-modal-av" id="emp-modal-av"></div>
-      <div class="emp-modal-tw">
-        <div class="emp-modal-ttl" id="emp-modal-ttl"></div>
-        <div class="emp-modal-sub" id="emp-modal-sub"></div>
-      </div>
-      <button class="emp-modal-close" id="emp-modal-close">✕</button>
-    </div>
-    <div class="emp-modal-body" id="emp-modal-body"></div>
-  </div>
-</div>
 </body>
 </html>
