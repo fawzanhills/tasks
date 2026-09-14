@@ -379,7 +379,7 @@ function renderEmpMini(rows) {
     const spdClass = speedBadgeClass(avgSpeed);
     const spdLbl   = speedLabel(avgSpeed, true);
     html += `
-      <div class="emp-mini-card" onclick="showEmployeeTasks('${name}','${col}')" title="اضغط لعرض مهام ${name}">
+      <div class="emp-mini-card" onclick="showEmployeeTasks(this.dataset.n,this.dataset.c)" data-n="${name}" data-c="${col}" title="اضغط لعرض مهام ${name}">
         <div class="emp-mini-avatar" style="background:${col};">${initials(name)}</div>
         <div class="emp-mini-info">
           <div class="emp-mini-name" title="${name}">${name}</div>
@@ -556,7 +556,7 @@ function renderEmployees(rows) {
     const spdClass = speedBadgeClass(avgSpeed);
     const spdLbl   = speedLabel(avgSpeed, false);
     html += `
-      <div class="emp-row" onclick="showEmployeeTasks('${name}','${col}')" title="اضغط لعرض مهام ${name}">
+      <div class="emp-row" onclick="showEmployeeTasks(this.dataset.n,this.dataset.c)" data-n="${name}" data-c="${col}" title="اضغط لعرض مهام ${name}">
         <div class="emp-avatar" style="background:${col};">${initials(name)}</div>
         <div class="emp-info">
           <div class="emp-name">${name}</div>
@@ -649,115 +649,129 @@ async function loadData() {
 /* ── Employee Tasks Modal ── */
 function showEmployeeTasks(empName, col) {
   /* build parent map */
-  const parentMap = {};
-  for (const g of groupTasks(allRows)) {
-    for (const s of g.subs) {
-      parentMap[(s['اسم المهمة']||'').trim()] = (g.main['اسم المهمة']||'').trim();
+  var parentMap = {};
+  var grps = groupTasks(allRows);
+  for (var gi = 0; gi < grps.length; gi++) {
+    for (var si = 0; si < grps[gi].subs.length; si++) {
+      var s = grps[gi].subs[si];
+      parentMap[(s['اسم المهمة']||'').trim()] = (grps[gi].main['اسم المهمة']||'').trim();
     }
   }
 
   /* filter rows for this employee */
-  const empRows = allRows.filter(r => {
-    if (!isValidRow(r) || isMain(r)) return false;
-    return splitEmployees(r['المسؤول']).includes(empName);
-  });
+  var empRows = [];
+  for (var ri = 0; ri < allRows.length; ri++) {
+    var rx = allRows[ri];
+    if (!isValidRow(rx) || isMain(rx)) continue;
+    if (splitEmployees(rx['المسؤول']).indexOf(empName) !== -1) empRows.push(rx);
+  }
+  var incomplete = empRows.filter(function(r){ var p=parseProgress(r['الإنجاز %']); return p===null||Math.round(p)<100; });
+  var complete   = empRows.filter(function(r){ var p=parseProgress(r['الإنجاز %']); return p!==null&&Math.round(p)===100; });
 
-  const incomplete = empRows.filter(r => { const p = parseProgress(r['الإنجاز %']); return p === null || Math.round(p) < 100; });
-  const complete   = empRows.filter(r => { const p = parseProgress(r['الإنجاز %']); return p !== null && Math.round(p) === 100; });
+  /* ── Incomplete tasks — expanded ── */
+  var incHtml = '';
+  for (var ii = 0; ii < incomplete.length; ii++) {
+    var r   = incomplete[ii];
+    var p   = parseProgress(r['الإنجاز %']) || 0;
+    var pct = Math.round(p);
+    var dl  = parseDate(r['الديدلاين']);
+    var d   = daysLeft(dl);
+    var pc  = getColor(pct, d);
+    var stage  = (r['المرحلة الحالية']||'').trim();
+    var nxt    = (r['الخطوة القادمة']||'').trim();
+    var upd    = (r['تاريخ آخر تحديث']||'').trim();
+    var dlTxt  = r['الديدلاين']||'';
+    var parent = parentMap[(r['اسم المهمة']||'').trim()]||'';
 
-  /* ── Render incomplete tasks (expanded) ── */
-  let incHtml = '';
-  for (const r of incomplete) {
-    const p     = parseProgress(r['الإنجاز %']) || 0;
-    const pct   = Math.round(p);
-    const dl    = parseDate(r['الديدلاين']);
-    const d     = daysLeft(dl);
-    const pc    = getColor(pct, d);
-    const stage = (r['المرحلة الحالية']||'').trim();
-    const next  = (r['الخطوة القادمة']||'').trim();
-    const upd   = (r['تاريخ آخر تحديث']||'').trim();
-    const dlTxt = r['الديدلاين']||'';
-    const parent = parentMap[(r['اسم المهمة']||'').trim()]||'';
-    incHtml += `
-      <div class="emp-mtask">
-        <div class="emp-mtask-hdr">
-          <div class="emp-mtask-nm">
-            <div class="emp-mtask-title">${r['اسم المهمة']||''}</div>
-            ${parent ? '<div class="emp-mtask-parent">◂ '+parent+'</div>' : ''}
-          </div>
-          ${getBadge(pct, d)}
-        </div>
-        <div class="emp-mtask-body">
-          ${dlTxt ? '<div style="font-size:11px;color:#9a7060;margin-bottom:7px;">📅 الديدلاين: '+dlTxt+'</div>' : ''}
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div class="prog-bar" style="height:8px;flex:1;"><div class="prog-fill" style="width:${pct}%;background:${pc};height:100%;"></div></div>
-            <span class="prog-pct" style="color:${pc};">${pct}%</span>
-          </div>
-          ${stage||next||upd ? `<div class="emp-mtask-dgrid">
-            ${stage ? '<div class="sub-detail-box"><div class="sub-detail-lbl">◈ المرحلة الحالية</div><div class="sub-detail-val">'+stage+'</div></div>' : ''}
-            ${next  ? '<div class="sub-detail-box"><div class="sub-detail-lbl">◉ الخطوة القادمة</div><div class="sub-detail-val">'+next+'</div></div>' : ''}
-            ${upd   ? '<div class="sub-detail-box"><div class="sub-detail-lbl">◷ آخر تحديث</div><div class="sub-detail-val">'+upd+'</div></div>' : ''}
-          </div>` : ''}
-        </div>
-      </div>`;
+    var detHtml = '';
+    if (stage || nxt || upd) {
+      detHtml += '<div class="emp-mtask-dgrid">';
+      if (stage) detHtml += '<div class="sub-detail-box"><div class="sub-detail-lbl">◈ المرحلة الحالية</div><div class="sub-detail-val">'+stage+'</div></div>';
+      if (nxt)   detHtml += '<div class="sub-detail-box"><div class="sub-detail-lbl">◉ الخطوة القادمة</div><div class="sub-detail-val">'+nxt+'</div></div>';
+      if (upd)   detHtml += '<div class="sub-detail-box"><div class="sub-detail-lbl">◷ آخر تحديث</div><div class="sub-detail-val">'+upd+'</div></div>';
+      detHtml += '</div>';
+    }
+
+    incHtml +=
+      '<div class="emp-mtask">'+
+        '<div class="emp-mtask-hdr">'+
+          '<div class="emp-mtask-nm">'+
+            '<div class="emp-mtask-title">'+(r['اسم المهمة']||'')+'</div>'+
+            (parent ? '<div class="emp-mtask-parent">◂ '+parent+'</div>' : '')+
+          '</div>'+
+          getBadge(pct,d)+
+        '</div>'+
+        '<div class="emp-mtask-body">'+
+          (dlTxt ? '<div style="font-size:11px;color:#9a7060;margin-bottom:7px;">📅 الديدلاين: '+dlTxt+'</div>' : '')+
+          '<div style="display:flex;align-items:center;gap:8px;">'+
+            '<div class="prog-bar" style="height:8px;flex:1;"><div class="prog-fill" style="width:'+pct+'%;background:'+pc+';height:100%;"></div></div>'+
+            '<span class="prog-pct" style="color:'+pc+';">'+pct+'%</span>'+
+          '</div>'+
+          detHtml+
+        '</div>'+
+      '</div>';
   }
 
-  /* ── Render complete tasks (collapsed — click to expand) ── */
-  let compHtml = '';
-  let ci = 0;
-  for (const r of complete) {
-    const cdRaw = (r['تاريخ الإنجاز']||'').trim();
-    const dl    = parseDate(r['الديدلاين']);
-    const cd    = parseDate(cdRaw);
-    const spd   = completionSpeed(cd, dl);
-    const spdBadge = spd !== null
-      ? `<span class="task-speed-badge ${spd>0?'task-speed-early':spd<0?'task-speed-late':'task-speed-ontime'}">${speedLabel(spd,false)}</span>`
-      : '';
-    const parent = parentMap[(r['اسم المهمة']||'').trim()]||'';
-    const cid = 'emc-'+(ci++);
-    compHtml += `
-      <div class="emp-mtask">
-        <div class="emp-mtask-hdr clickable" onclick="toggleEmpTask('${cid}',this)">
-          <div class="emp-mtask-nm">
-            <div class="emp-mtask-title">${r['اسم المهمة']||''}</div>
-            ${parent ? '<div class="emp-mtask-parent">◂ '+parent+'</div>' : ''}
-          </div>
-          <span class="badge badge-done">مكتملة ✓</span>
-          <span class="emp-tog" id="tog-${cid}">▾</span>
-        </div>
-        <div class="emp-mtask-body" id="${cid}" style="display:none;">
-          ${cdRaw
-            ? `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                 <span class="completion-date-lbl">📅 تاريخ الإنجاز:</span>
-                 <span class="completion-date-val">${cdRaw}</span>
-                 ${spdBadge}
-               </div>`
-            : '<div class="completion-date-missing">⚠ تاريخ الإنجاز غير مدخل</div>'
-          }
-          ${r['الديدلاين'] ? '<div style="font-size:11px;color:#9a7060;margin-top:6px;">📅 الديدلاين: '+r['الديدلاين']+'</div>' : ''}
-        </div>
-      </div>`;
+  /* ── Complete tasks — collapsed, click to expand ── */
+  var compHtml = '';
+  for (var ci = 0; ci < complete.length; ci++) {
+    var r      = complete[ci];
+    var cdRaw  = (r['تاريخ الإنجاز']||'').trim();
+    var dl     = parseDate(r['الديدلاين']);
+    var cd     = parseDate(cdRaw);
+    var spd    = completionSpeed(cd, dl);
+    var parent = parentMap[(r['اسم المهمة']||'').trim()]||'';
+    var cid    = 'emc-'+ci;
+
+    var spdBadge = '';
+    if (spd !== null) {
+      var sc = spd>0 ? 'task-speed-early' : (spd<0 ? 'task-speed-late' : 'task-speed-ontime');
+      spdBadge = '<span class="task-speed-badge '+sc+'">'+speedLabel(spd,false)+'</span>';
+    }
+    var bodyContent = cdRaw
+      ? ('<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'+
+           '<span class="completion-date-lbl">📅 تاريخ الإنجاز:</span>'+
+           '<span class="completion-date-val">'+cdRaw+'</span>'+
+           spdBadge+
+         '</div>')
+      : '<div class="completion-date-missing">⚠ تاريخ الإنجاز غير مدخل</div>';
+    if (r['الديدلاين']) bodyContent += '<div style="font-size:11px;color:#9a7060;margin-top:6px;">📅 الديدلاين: '+r['الديدلاين']+'</div>';
+
+    compHtml +=
+      '<div class="emp-mtask">'+
+        '<div class="emp-mtask-hdr clickable" onclick="toggleEmpTask(\''+cid+'\')">'+
+          '<div class="emp-mtask-nm">'+
+            '<div class="emp-mtask-title">'+(r['اسم المهمة']||'')+'</div>'+
+            (parent ? '<div class="emp-mtask-parent">◂ '+parent+'</div>' : '')+
+          '</div>'+
+          '<span class="badge badge-done">مكتملة ✓</span>'+
+          '<span class="emp-tog" id="tog-'+cid+'">▾</span>'+
+        '</div>'+
+        '<div class="emp-mtask-body" id="'+cid+'" style="display:none;">'+
+          bodyContent+
+        '</div>'+
+      '</div>';
   }
 
   /* ── Fill modal ── */
-  const av = document.getElementById('emp-modal-av');
+  var av = document.getElementById('emp-modal-av');
   av.textContent = initials(empName);
   av.style.background = col || '#795745';
   document.getElementById('emp-modal-ttl').textContent = empName;
-  document.getElementById('emp-modal-sub').textContent =
-    (incomplete.length ? incomplete.length + ' غير مكتملة' : '') +
-    (incomplete.length && complete.length ? ' • ' : '') +
-    (complete.length ? complete.length + ' مكتملة' : '') ||
-    'لا توجد مهام';
+  var subTxt = '';
+  if (incomplete.length) subTxt += incomplete.length+' غير مكتملة';
+  if (incomplete.length && complete.length) subTxt += ' • ';
+  if (complete.length)   subTxt += complete.length+' مكتملة';
+  document.getElementById('emp-modal-sub').textContent = subTxt || 'لا توجد مهام';
 
-  let bodyHtml = '';
+  var bodyHtml = '';
   if (incomplete.length) {
-    bodyHtml += '<div class="emp-msec-hdr">⏳ المهام غير المكتملة (' + incomplete.length + ')</div>' + incHtml;
-  } else {
-    bodyHtml += '<div style="text-align:center;padding:1rem 1rem .5rem;color:#2E7D32;font-size:13px;font-weight:600;">✅ جميع مهام هذا الموظف مكتملة!</div>';
+    bodyHtml += '<div class="emp-msec-hdr">⏳ المهام غير المكتملة ('+incomplete.length+')</div>'+incHtml;
+  } else if (empRows.length) {
+    bodyHtml += '<div style="text-align:center;padding:1rem;color:#2E7D32;font-size:13px;font-weight:600;">✅ جميع مهام هذا الموظف مكتملة!</div>';
   }
   if (complete.length) {
-    bodyHtml += '<div class="emp-msec-hdr done-sec">✅ المهام المكتملة (' + complete.length + ')</div>' + compHtml;
+    bodyHtml += '<div class="emp-msec-hdr done-sec">✅ المهام المكتملة ('+complete.length+')</div>'+compHtml;
   }
   if (!empRows.length) {
     bodyHtml = '<div style="text-align:center;color:#9a7060;padding:2.5rem 1rem;">لا توجد مهام مسندة لهذا الموظف</div>';
@@ -768,10 +782,10 @@ function showEmployeeTasks(empName, col) {
 }
 
 function toggleEmpTask(id) {
-  const body = document.getElementById(id);
-  const tog  = document.getElementById('tog-' + id);
+  var body = document.getElementById(id);
+  var tog  = document.getElementById('tog-'+id);
   if (!body) return;
-  const isOpen = body.style.display !== 'none';
+  var isOpen = body.style.display !== 'none';
   body.style.display = isOpen ? 'none' : 'block';
   if (tog) tog.classList.toggle('open', !isOpen);
 }
